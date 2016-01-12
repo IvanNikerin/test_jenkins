@@ -115,6 +115,22 @@ window.CsvXlsXlsxImporter = React.createClass({
    		reader.readAsBinaryString(file);
 	},
 
+	getCsvJson: function(file) {
+		var formData = new FormData();
+		formData.append('file', file);
+
+   		$.ajax({
+	    	type: 'put',
+	    	url: 'http://127.0.0.1/importer/api/parsers/csv/',
+	    	data: formData,
+	    	contentType: 'text/plain',
+	    	processData: false,  // tell jQuery not to process the data
+	    	success: function(data){
+	    		alert(JSON.stringify(data))
+	    	}
+   		});
+	},
+
 	handleFile: function(event) {
     	let input = event.target;
 
@@ -129,7 +145,8 @@ window.CsvXlsXlsxImporter = React.createClass({
     		this.viewXlsXlsx(input.files[0], XLS);
     	}
     	else if(extension == "csv") {
-    		this.viewCsv(input.files[0]);
+    		this.getCsvJson(input.files[0]);
+    		//this.viewCsv(input.files[0]);
     	}
     	else {
 			this.viewError("Bad file type");
