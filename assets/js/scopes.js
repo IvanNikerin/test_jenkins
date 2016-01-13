@@ -19,3 +19,7 @@ var BootstrapTable = ReactBootstrapTable.BootstrapTable;
 var TableHeaderColumn = ReactBootstrapTable.TableHeaderColumn;
 
 window.categories = [];
+
+window.products = {'Картинка': 'picture', 'Заголовок': 'title', 'Описание': 'description', 'Скрытое': 'hidden', 'Цена': 'price'};
+
+console.log(window.products);
