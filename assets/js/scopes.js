@@ -14,7 +14,6 @@ var Table = ReactBootstrap.Table;
 var Panel = ReactBootstrap.Panel;
 var DropdownButton = ReactBootstrap.DropdownButton;
 var MenuItem = ReactBootstrap.MenuItem;
-var SubMenu = ReactBootstrap.MenuItem;
 var ButtonGroup = ReactBootstrap.ButtonGroup;
 var BootstrapTable = ReactBootstrapTable.BootstrapTable;
 var TableHeaderColumn = ReactBootstrapTable.TableHeaderColumn;

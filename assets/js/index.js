@@ -10,7 +10,7 @@ window.Index = React.createClass({
     getShop() {
         $.ajax({
             type: "post",
-            url: 'http://127.0.0.1/api/beta/profile',
+            url: 'http://127.0.0.1/tobox/api/beta/profile',
             crossDomain: true,
             contentType: 'application/json',
             dataType: 'json',
@@ -26,11 +26,11 @@ window.Index = React.createClass({
             }.bind(this)
         });        
     },
-	
-	getCategories() {
+
+    getCategories() {
         $.ajax({
             type: "get",
-            url: 'http://127.0.0.1/api/beta/categories',
+            url: 'http://127.0.0.1/tobox/api/beta/categories',
             contentType: 'application/json',
             dataType: 'json',
             headers: {
@@ -46,12 +46,10 @@ window.Index = React.createClass({
         });
     },
 
-
-
     login() {   
         $.ajax({
             type: "post",
-            url: 'http://127.0.0.1/api/beta/auth/phone/login',
+            url: 'http://127.0.0.1/tobox/api/beta/auth/phone/login',
             data: JSON.stringify({phoneNumber: '79689854262', password: '123456'}),
             crossDomain: true,
             contentType: 'application/json',
@@ -67,10 +65,15 @@ window.Index = React.createClass({
                     });
 
                     this.getShop();
-					
-					this.getCategories();
+
+                    this.getCategories();
                 }
-            }.bind(this)
+                alert(JSON.stringify(data));
+            }.bind(this),
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.status);
+                alert(thrownError);
+            }
         });
     },
 
