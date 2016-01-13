@@ -68,7 +68,12 @@ window.Index = React.createClass({
 
                     this.getCategories();
                 }
-            }.bind(this)
+                alert(JSON.stringify(data));
+            }.bind(this),
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.status);
+                alert(thrownError);
+            }
         });
     },
 

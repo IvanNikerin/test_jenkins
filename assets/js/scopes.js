@@ -13,7 +13,6 @@ var Table = ReactBootstrap.Table;
 var Panel = ReactBootstrap.Panel;
 var DropdownButton = ReactBootstrap.DropdownButton;
 var MenuItem = ReactBootstrap.MenuItem;
-var SubMenu = ReactBootstrap.MenuItem;
 var ButtonGroup = ReactBootstrap.ButtonGroup;
 var BootstrapTable = ReactBootstrapTable.BootstrapTable;
 var TableHeaderColumn = ReactBootstrapTable.TableHeaderColumn;
@@ -22,4 +21,7 @@ window.categories = [];
 
 window.products = {'Картинка': 'picture', 'Заголовок': 'title', 'Описание': 'description', 'Скрытое': 'hidden', 'Цена': 'price'};
 
-console.log(window.products);
+
+$(document).ready(function (){
+  $("#category").mcDropdown("#categorymenu");
+});
