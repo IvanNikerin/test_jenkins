@@ -27,6 +27,25 @@ window.Index = React.createClass({
         });        
     },
 
+    getCategories() {
+        $.ajax({
+            type: "get",
+            url: 'http://127.0.0.1/tobox/api/beta/categories',
+            contentType: 'application/json',
+            dataType: 'json',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            success: function(data){
+                window.categories = data;
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.status);
+                alert(thrownError);
+            }
+        });
+    },
+
     login() {   
         $.ajax({
             type: "post",
@@ -46,6 +65,8 @@ window.Index = React.createClass({
                     });
 
                     this.getShop();
+
+                    this.getCategories();
                 }
             }.bind(this)
         });
