@@ -1,18 +1,30 @@
 window.YmlProducts = React.createClass({
 	getInitialState: function() {
 		return {
-		     rowId: 0,
+		    rowId: 0,
+			prod_struct: this.props.data
 		};
 	},
+	componentDidMount: function() {
+		var attrs = this.state.prod_struct['attrs'];
+		var params = this.state.prod_struct['params']
+		
+		for (var i in attrs) {
+			this.addRow('prod-attr');
+			this.rowSelect(this.state.rowId, [attrs[i],''], 'prod-attr');
+		}
+		for (var j in params) {
+			this.addRow('prod-param');
+			this.rowSelect(this.state.rowId, [params[j],''], 'prod-param');
+		}
+    },
 	addRow: function(tableName) {
 		var pid = this.state.rowId
         var row = $('<tr id="row-'+ tableName + pid + '"><td id="yml-'+ tableName + pid + '"></td><td id="tobox-'+ tableName + pid + '"></td><td id="delete-button-'+ tableName + pid + '"></td></tr>');
         $("#" + tableName).append(row);
 		
 		ReactDOM.render(
-			<Input type="select" placeholder="select">
-			  <option value="select">select</option>
-			</Input>,
+			<YmlProductSelect data={tableName=='prod-attr' ? this.state.prod_struct['attrs'] : this.state.prod_struct['params']} />,
 			document.getElementById('yml-'+ tableName + pid)
 		);
 		
@@ -27,6 +39,11 @@ window.YmlProducts = React.createClass({
 		);
 		
 		this.state.rowId += 1;
+	},
+	rowSelect: function(id, data, tableName) {
+		var elem = document.getElementById('row-'+ tableName + (id-1).toString());
+		var selects = elem.getElementsByTagName('select');
+		selects[0].value = data[0];
 	},
 	deleteRow: function(pid, tableName) {
 		var elem = document.getElementById('row-'+ tableName + pid);

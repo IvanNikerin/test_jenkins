@@ -2,17 +2,25 @@ window.YmlCategories = React.createClass({
 	getInitialState: function() {
 		return {
 		     rowId: 0,
+			 cats: this.props.data
 		};
 	},
+	componentDidMount: function() {
+		var cats = this.state.cats;
+		
+		for (var i in cats) {
+			this.addRow();
+			this.rowSelect(this.state.rowId, [cats[i]['cat_id'], '']);
+			//console.log(cats[i]);
+		}
+    },
 	addRow: function() {
 		var id = this.state.rowId
         var row = $('<tr id="row-cat-' + id + '"><td id="yml-cat-' + id + '"></td><td id="tobox-cat-' + id + '"></td><td id="delete-button-' + id + '"></td></tr>');
         $("#table-cat").append(row);
 		
 		ReactDOM.render(
-			<Input type="select" placeholder="select">
-			  <option value="select">select</option>
-			</Input>,
+			<YmlCategorySelect data={this.state.cats} />,
 			document.getElementById('yml-cat-' + id)
 		);
 		
@@ -29,6 +37,11 @@ window.YmlCategories = React.createClass({
 		);
 		
 		this.state.rowId += 1;
+	},
+	rowSelect: function(id, data) {
+		var elem = document.getElementById('row-cat-' + (id-1).toString());
+		var selects = elem.getElementsByTagName('select');
+		selects[0].value = data[0];
 	},
 	deleteRow: function(id) {
 		var elem = document.getElementById('row-cat-' + id);

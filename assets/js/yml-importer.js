@@ -12,47 +12,53 @@
 		);
 	},
 	
-	uploadFile() {
-		alert('hui');
+	viewYml: function(data) {
+		if (data) {
+			ReactDOM.render(
+				<Tabs defaultActiveKey={1}>
+					<Tab eventKey={1} title="Categories">
+						<Panel header={<h3>Configure data</h3>} bsStyle="success">
+							<Row>
+								<YmlCategories data={data['categories']} />		
+							</Row>
+						</Panel>
+					</Tab>
+					<Tab eventKey={2} title="Products">
+						<Panel header={<h3>Configure data</h3>} bsStyle="success">
+							<Row>
+								<YmlProducts data={data['prod_struct']} />		
+							</Row>
+						</Panel>
+					</Tab>
+				</Tabs>,
+				document.getElementById('yml-importer-content')				
+			);
+			ReactDOM.render(
+				<Row>
+					<Col xs={3}>
+						<ButtonInput  bsStyle="primary" value="Upload Products" onClick={this.uploadFile} />
+					</Col>
+				</Row>,
+				document.getElementById('btns-id')
+			);
+		} else { 
+		    alert("Failed to load file");
+		}	
 	},
 	
-	viewYml: function(file) {
-		if (file) {
-			var r = new FileReader();
-			r.onload = function(e) { 
-				var xml = $.parseXML(e.target.result);
-				ReactDOM.render(
-					<Tabs defaultActiveKey={1}>
-						<Tab eventKey={1} title="Categories">
-							<Panel header={<h3>Configure data</h3>} bsStyle="success">
-								<Row>
-									<YmlCategories />		
-								</Row>
-							</Panel>
-						</Tab>
-						<Tab eventKey={2} title="Products">
-							<Panel header={<h3>Configure data</h3>} bsStyle="success">
-								<Row>
-									<YmlProducts />		
-								</Row>
-							</Panel>
-						</Tab>
-					</Tabs>,
-					document.getElementById('yml-importer-content')				
-				);
-				ReactDOM.render(
-					<Row>
-						<Col xs={3}>
-							<ButtonInput  bsStyle="primary" value="Upload Products" onClick={this.uploadFile} />
-						</Col>
-					</Row>,
-					document.getElementById('btns-id')
-				);
-			}
-			r.readAsText(file);
-		} else { 
-		  alert("Failed to load file");
-		}	
+	parse: function(file, url) {
+   		$.ajax({
+	    	type: 'put',
+	    	url: url,
+	    	data: file,
+	    	processData: false,
+	    	"headers": {
+    			"content-type": "text/plain"
+  			},
+	    	success: function(data){
+	    		this.viewYml(data);
+	    	}.bind(this)
+   		});
 	},
 
 	handleFile: function(event) {
@@ -63,7 +69,7 @@
 		let json_result = {};
 
     	if(extension == "yml" || extension == "xml") {
-    		this.viewYml(input.files[0]);
+    		this.parse(input.files[0], window.importer_api_host + 'api/parsers/yml/');
     	}
     	else {
 			this.viewError("Bad file type");
