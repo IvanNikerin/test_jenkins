@@ -91,7 +91,7 @@
 
 							</div>
 						</Panel>
-						<div id="yml-importer-content" class="table-responsive">
+						<div id="yml-importer-content" className="table-responsive">
 					   	</div>
 					</Col>
 				</Row>

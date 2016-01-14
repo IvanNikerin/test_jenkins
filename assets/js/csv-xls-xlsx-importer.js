@@ -52,10 +52,10 @@ window.CsvXlsXlsxImporter = React.createClass({
 		let json_result = {};
 
     	if(extension == "xls" || extension == "xlsx") {
-    		this.parse(input.files[0], 'http://127.0.0.1/importer/api/parsers/xls/');
+    		this.parse(input.files[0], window.importer_api_host + 'api/parsers/xls/');
     	}
     	else if(extension == "csv") {
-    		this.parse(input.files[0], 'http://127.0.0.1/importer/api/parsers/csv/');
+    		this.parse(input.files[0], window.importer_api_host + 'api/parsers/csv/');
     	}
     	else {
 			this.viewError("Bad file type");
