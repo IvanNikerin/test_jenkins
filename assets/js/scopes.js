@@ -20,6 +20,7 @@ var MenuItem = ReactBootstrap.MenuItem;
 var ButtonGroup = ReactBootstrap.ButtonGroup;
 var BootstrapTable = ReactBootstrapTable.BootstrapTable;
 var TableHeaderColumn = ReactBootstrapTable.TableHeaderColumn;
+var ProgressBar = ReactBootstrap.ProgressBar;
 
 window.categories = [];
 
