@@ -1,4 +1,10 @@
-window.YmlCategorySelect = React.createClass({
+var React = require('react');
+
+var Input = require('react-bootstrap').Input;
+
+module.exports = React.createClass({
+	displayName: 'YmlCategorySelect',
+
 	render: function() {
 		var rows = [];
 		var cats = this.props.data;

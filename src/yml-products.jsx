@@ -1,4 +1,20 @@
-window.YmlProducts = React.createClass({
+var $ = require('jquery');
+
+var React = require('react');
+var ReactDOM = require('react-dom');
+
+var Input = require('react-bootstrap').Input;
+var Button = require('react-bootstrap').Button;
+var Col = require('react-bootstrap').Col;
+var Panel = require('react-bootstrap').Panel;
+var Table = require('react-bootstrap').Table;
+
+var ToboxProductAttributesSelect = require('./tobox-product-attributes-select');
+var YmlProductSelect = require('./yml-product-select');
+
+module.exports = React.createClass({
+	displayName: 'YmlProducts',
+
 	getInitialState: function() {
 		return {
 		    rowId: 0,
@@ -65,7 +81,7 @@ window.YmlProducts = React.createClass({
 					<tbody id="prod-attr">
 					</tbody>
 				</Table>
-				<Button onClick={this.addRow.bind(this, 'prod-attr')} class='uberbrn'>Add</Button>
+				<Button onClick={this.addRow.bind(this, 'prod-attr')} className='uberbrn'>Add</Button>
 			</Panel>
 			<Panel header='Assign product params from YML'>
 				<Table striped bordered condensed hover>

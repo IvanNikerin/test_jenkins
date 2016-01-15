@@ -1,4 +1,24 @@
-﻿window.YmlImporter = React.createClass({
+﻿var $ = require('jquery');
+
+var React = require('react');
+var ReactDOM = require('react-dom');
+
+var Panel = require('react-bootstrap').Panel;
+var Row = require('react-bootstrap').Row;
+var Col = require('react-bootstrap').Col;
+var Tab = require('react-bootstrap').Tab;
+var Tabs = require('react-bootstrap').Tabs;
+var ButtonInput = require('react-bootstrap').ButtonInput;
+var Button = require('react-bootstrap').Button;
+var Jumbotron = require('react-bootstrap').Jumbotron;
+var Input = require('react-bootstrap').Input;
+var ProgressBar = require('react-bootstrap').ProgressBar;
+
+var YmlCategories = require('./yml-categories');
+var YmlProducts = require('./yml-products');
+
+module.exports = React.createClass({
+	displayName: 'YmlImporter',
 	getInitialState: function() {
 		return {
 		     file: ""
@@ -92,17 +112,17 @@
 	
 
 	scanFile: function() {
-		this.parse(this.state.file, window.importer_api_host + 'api/parsers/yml/');
+		this.parse(this.state.file, '/importer/api/parsers/yml/');
 	},
 
 	handleFile: function(event) {
 		this.setState({file: ''});
 		
-    	let input = event.target;
+    	var input = event.target;
 
-		let extension = input.files[0].name.split('.').pop();
+		var extension = input.files[0].name.split('.').pop();
 
-		let json_result = {};
+		var json_result = {};
 
     	if(extension == "yml" || extension == "xml") {
 

@@ -1,4 +1,10 @@
-window.YmlProductSelect = React.createClass({
+var React = require('react');
+
+var Input = require('react-bootstrap').Input;
+
+module.exports = React.createClass({
+	displayName: 'YmlProductSelect',
+
 	render: function() {
 		var rows = [];
 		var vals = this.props.data;

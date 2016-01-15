@@ -1,4 +1,19 @@
-window.YmlCategories = React.createClass({
+var $ = require('jquery');
+
+var React = require('react');
+var ReactDOM = require('react-dom');
+
+var Panel = require('react-bootstrap').Panel;
+var Col = require('react-bootstrap').Col;
+var Button = require('react-bootstrap').Button;
+var Input = require('react-bootstrap').Input;
+var Table = require('react-bootstrap').Table;
+
+var YmlCategorySelect = require('./yml-category-select');
+
+module.exports = React.createClass({
+	displayName: 'YmlCategories',
+
 	getInitialState: function() {
 		return {
 		     rowId: 0,
