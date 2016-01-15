@@ -1,4 +1,15 @@
-window.Index = React.createClass({
+var $ = require('jquery');
+require('jquery.cookie');
+
+var React = require('react');
+
+var Tabs = require('react-bootstrap').Tabs;
+var Tab = require('react-bootstrap').Tab;
+
+var CsvXlsImporter = require('./csv-xls-importer');
+var YmlImporter = require('./yml-importer');
+
+module.exports = React.createClass({displayName: 'Content',
     getInitialState: function() {
         return {
             token: '',
@@ -7,10 +18,10 @@ window.Index = React.createClass({
         };
     },
 
-    getShop() {
+    getShop: function() {
         $.ajax({
             type: "post",
-            url: window.tobox_api_host + 'api/beta/profile',
+            url: '/tobox/api/beta/profile',
             crossDomain: true,
             contentType: 'application/json',
             dataType: 'json',
@@ -27,10 +38,10 @@ window.Index = React.createClass({
         });        
     },
 
-    getCategories() {
+    getCategories: function() {
         $.ajax({
             type: "get",
-            url: window.tobox_api_host + 'api/beta/categories',
+            url: '/tobox/api/beta/categories',
             contentType: 'application/json',
             dataType: 'json',
             headers: {
@@ -46,12 +57,17 @@ window.Index = React.createClass({
         });
     },
 
-    login() {
+    processTobox: function() {
+        this.getShop();
+        this.getCategories();
+    },
+
+    login: function() {
         if($.cookie('toboxkey') == null)
         {
             $.ajax({
                 type: "post",
-                url: window.tobox_api_host + 'api/beta/auth/phone/login',
+                url: '/tobox/api/beta/auth/phone/login',
                 data: JSON.stringify({phoneNumber: '79689854262', password: '123456'}),
                 crossDomain: true,
                 contentType: 'application/json',
@@ -66,9 +82,7 @@ window.Index = React.createClass({
                             tokens: $.cookie('toboxskey')
                         });
 
-                        this.getShop();
-
-                        this.getCategories();
+                        this.processTobox();
                     }
                 }.bind(this),
                 error: function (xhr, ajaxOptions, thrownError) {
@@ -76,6 +90,9 @@ window.Index = React.createClass({
                     alert(thrownError);
                 }
             });
+        }
+        else {
+            this.processTobox();
         }
     },
 
@@ -91,15 +108,10 @@ window.Index = React.createClass({
 						<YmlImporter shopId={this.state.shopId} />
 					</Tab>
     				<Tab eventKey={2} title="CSV XLS XLSX importer">
-    					<CsvXlsXlsxImporter shopId={this.state.shopId}/>
+    					<CsvXlsImporter shopId={this.state.shopId}/>
     				</Tab>
     			</Tabs>
 			</div>
     	);
   	}
 });
-
-ReactDOM.render(
-	<Index />,
-	document.getElementById('content')
-);

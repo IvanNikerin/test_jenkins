@@ -1,4 +1,20 @@
-window.CsvXlsXlsxImporter = React.createClass({
+var $ = require('jquery');
+
+var React = require('react');
+var ReactDOM = require('react-dom');
+
+var Panel = require('react-bootstrap').Panel;
+var Row = require('react-bootstrap').Row;
+var Col = require('react-bootstrap').Col;
+var GridViewer = require('react-bootstrap').GridViewer;
+var Jumbotron = require('react-bootstrap').Jumbotron;
+var Input = require('react-bootstrap').Input;
+
+var GridViewer = require('./grid-viewer');
+
+module.exports = React.createClass({
+	displayName: 'CsvXlsImporter',
+
 	viewError: function(message) {
 		ReactDOM.render(
    			<Panel header={<h3>Configure data</h3>} bsStyle="danger">
@@ -45,17 +61,17 @@ window.CsvXlsXlsxImporter = React.createClass({
 	},
 
 	handleFile: function(event) {
-    	let input = event.target;
+    	var input = event.target;
 
-		let extension = input.files[0].name.split('.').pop();
+		var extension = input.files[0].name.split('.').pop();
 
-		let json_result = {};
+		var json_result = {};
 
     	if(extension == "xls" || extension == "xlsx") {
-    		this.parse(input.files[0], window.importer_api_host + 'api/parsers/xls/');
+    		this.parse(input.files[0], '/importer/api/parsers/xls/');
     	}
     	else if(extension == "csv") {
-    		this.parse(input.files[0], window.importer_api_host + 'api/parsers/csv/');
+    		this.parse(input.files[0], '/importer/api/parsers/csv/');
     	}
     	else {
 			this.viewError("Bad file type");

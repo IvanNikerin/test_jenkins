@@ -1,4 +1,22 @@
-﻿window.YmlImporter = React.createClass({
+﻿var $ = require('jquery');
+
+var React = require('react');
+var ReactDOM = require('react-dom');
+
+var Panel = require('react-bootstrap').Panel;
+var Row = require('react-bootstrap').Row;
+var Col = require('react-bootstrap').Col;
+var Tab = require('react-bootstrap').Tab;
+var Tabs = require('react-bootstrap').Tabs;
+var ButtonInput = require('react-bootstrap').ButtonInput;
+var Jumbotron = require('react-bootstrap').Jumbotron;
+var Input = require('react-bootstrap').Input;
+
+var YmlCategories = require('./yml-categories');
+var YmlProducts = require('./yml-products');
+
+module.exports = React.createClass({
+	displayName: 'YmlImporter',
 	viewError: function(message) {
 		ReactDOM.render(
    			<Panel header={<h3>Configure data</h3>} bsStyle="danger">
@@ -12,7 +30,7 @@
 		);
 	},
 	
-	uploadFile() {
+	uploadFile: function() {
 		alert('hui');
 	},
 	
@@ -26,14 +44,14 @@
 						<Tab eventKey={1} title="Categories">
 							<Panel header={<h3>Configure data</h3>} bsStyle="success">
 								<Row>
-									<YmlCategories />		
+									<YmlCategories />
 								</Row>
 							</Panel>
 						</Tab>
 						<Tab eventKey={2} title="Products">
 							<Panel header={<h3>Configure data</h3>} bsStyle="success">
 								<Row>
-									<YmlProducts />		
+									<YmlProducts />
 								</Row>
 							</Panel>
 						</Tab>
@@ -56,11 +74,11 @@
 	},
 
 	handleFile: function(event) {
-    	let input = event.target;
+    	var input = event.target;
 
-		let extension = input.files[0].name.split('.').pop();
+		var extension = input.files[0].name.split('.').pop();
 
-		let json_result = {};
+		var json_result = {};
 
     	if(extension == "yml" || extension == "xml") {
     		this.viewYml(input.files[0]);

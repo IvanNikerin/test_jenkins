@@ -1,4 +1,19 @@
-window.YmlProducts = React.createClass({
+var $ = require('jquery');
+
+var React = require('react');
+var ReactDOM = require('react-dom');
+
+var Input = require('react-bootstrap').Input;
+var Button = require('react-bootstrap').Button;
+var Col = require('react-bootstrap').Col;
+var Panel = require('react-bootstrap').Panel;
+var Table = require('react-bootstrap').Table;
+
+var ToboxProductAttributesSelect = require('./tobox-product-attributes-select');
+
+module.exports = React.createClass({
+	displayName: 'YmlProducts',
+
 	getInitialState: function() {
 		return {
 		     rowId: 0,

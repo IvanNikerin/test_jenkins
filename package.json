@@ -1,0 +1,32 @@
+{
+  "name": "importer",
+  "version": "1.0.0",
+  "description": "tobox importer tool",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "bootstrap": "^3.3.6",
+    "css-loader": "^0.23.1",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "file-loader": "^0.8.5",
+    "handlebars": "^4.0.5",
+    "handlebars-loader": "^1.1.4",
+    "jquery.cookie": "^1.4.1",
+    "json-loader": "^0.5.4",
+    "jsx-loader": "^0.13.2",
+    "less": "^2.5.3",
+    "less-loader": "^2.2.2",
+    "proxy-middleware": "^0.15.0",
+    "react": "^0.14.6",
+    "react-bootstrap": "^0.28.2",
+    "react-bootstrap-table": "^1.4.1",
+    "react-dom": "^0.14.6",
+    "style-loader": "^0.13.0",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.12.11"
+  }
+}

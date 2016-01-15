@@ -1,4 +1,10 @@
-window.ToboxProductAttributesSelect = React.createClass({
+var React = require('react');
+
+var Input = require('react-bootstrap').Input;
+
+module.exports = React.createClass({
+	displayName: 'ToboxProductAttributesSelect',
+
 	render: function() {
 		var rows = [];
 		for (var key in window.products) {
