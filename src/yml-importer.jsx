@@ -71,7 +71,53 @@ module.exports = React.createClass({
 		}	
 	},
 	
-	parse: function(file, url) {
+	uploadFile : function() {
+		var relation_data = {};
+		
+		var data_cats = new Array();
+		$('#table-cat > tr').each(function() {
+			var selects = this.getElementsByTagName('select');
+			if(selects.length > 1) {
+				data_cats.push({'yml':selects[0].value, 'tobox':selects[1].value});
+			}
+		});
+		
+		var data_attrs = new Array();
+		$('#prod-attr > tr').each(function() {
+			var tmp = {};
+			var selects = this.getElementsByTagName('select');
+			var autoupdate = this.getElementsByTagName('input');
+			if(selects.length > 1) {
+				tmp['yml'] = selects[0].value;
+				tmp['tobox'] = selects[1].value;
+			}
+			if(autoupdate.length > 0) {
+				tmp['autoupdate'] = autoupdate[0].value;
+			}
+			data_attrs.push(tmp);
+		});
+		
+		var data_params = new Array();
+		$('#prod-param > tr').each(function() {
+			var tmp = {};
+			var selects = this.getElementsByTagName('select');
+			var autoupdate = this.getElementsByTagName('input');
+			if(selects.length > 1) {
+				tmp['yml'] = selects[0].value;
+				tmp['tobox'] = selects[1].value;
+			}
+			if(autoupdate.length > 0) {
+				tmp['autoupdate'] = autoupdate[0].value;
+			}
+			data_params.push(tmp);
+		});
+		
+		console.log(relation_data);
+	},
+	
+	parse: function() {
+		var file = this.state.file;
+		var url = '/importer/api/parsers/yml/';
 		this.clearContent();
 		ReactDOM.render(<ProgressBar now={0} label="%(percent)s%" />, document.getElementById('progress-container'));
    		$.ajax({
@@ -109,11 +155,6 @@ module.exports = React.createClass({
 	    	}.bind(this)
    		});
 	},
-	
-
-	scanFile: function() {
-		this.parse(this.state.file, '/importer/api/parsers/yml/');
-	},
 
 	handleFile: function(event) {
 		this.setState({file: ''});
@@ -127,19 +168,6 @@ module.exports = React.createClass({
     	if(extension == "yml" || extension == "xml") {
 
 			this.setState({file: input.files[0]});
-			ReactDOM.render(
-			<Row>
-				<Col xs={3}>
-					<Button onClick={this.scanFile} >Scan YML</Button>
-				</Col>
-				<Col>
-					<div id='btn-upload'>
-						<ButtonInput  bsStyle="primary" value="Upload Products" onClick={this.uploadFile} />
-					</div>
-				</Col>
-			</Row>,
-			document.getElementById('btns-id')
-			);
     	}
     	else {
 			this.viewError("Bad file type");
@@ -169,8 +197,22 @@ module.exports = React.createClass({
 									<div id='progress-container'></div>
 								</Col>
 							</Row>
-							<div id="btns-id">
-							</div>
+							<Row>
+								<Col xs={3}>
+									<Button onClick={this.parse} >Scan YML</Button>
+								</Col>
+								<Col xs={3}>
+									<div id='btn-upload'>
+										<ButtonInput  bsStyle="primary" value="Upload Products" onClick={this.uploadFile} />
+									</div>
+								</Col>
+								<Col xs={2}>
+									<Input type="checkbox" label="Autoupdate" />	
+								</Col>
+								<Col xs={4}>
+									<Input type="url" placeholder="Autoupdate URL" />
+								</Col>
+							</Row>
 						</Panel>
 						<div id="yml-importer-content" className="table-responsive">
 					   	</div>

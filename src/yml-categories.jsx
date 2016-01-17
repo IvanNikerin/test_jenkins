@@ -41,7 +41,7 @@ module.exports = React.createClass({
 		
 		ReactDOM.render(
 			<Input type="select" placeholder="select">
-			  <option value="select">select</option>
+			  <option value="">select</option>
 			</Input>,
 			document.getElementById('tobox-cat-' + id)
 		);
