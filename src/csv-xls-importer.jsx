@@ -12,6 +12,9 @@ var Input = require('react-bootstrap').Input;
 var Nav = require('react-bootstrap').Nav;
 var NavDropdown = require('react-bootstrap').NavDropdown;
 var MenuItem = require('react-bootstrap').MenuItem;
+var Button = require('react-bootstrap').Button;
+var ButtonInput = require('react-bootstrap').ButtonInput;
+var ProgressBar = require('react-bootstrap').ProgressBar;
 
 var GridViewer = require('./grid-viewer');
 
@@ -117,7 +120,28 @@ module.exports = React.createClass({
 	},
 
 	parse: function(file, url) {
+		ReactDOM.render(<ProgressBar now={0} label="%(percent)s%" />, document.getElementById('csv-xls-progress-container'));
    		$.ajax({
+			xhr: function() {
+				var xhr = new window.XMLHttpRequest();
+				var count = 0;
+
+				xhr.upload.addEventListener("progress", function(evt) {
+					if (evt.lengthComputable) {
+						var percentComplete = evt.loaded / evt.total;
+						percentComplete = parseInt(percentComplete * 100);
+					
+						if(count > 5){
+							count = 0;
+							ReactDOM.render(<ProgressBar now={percentComplete} label="%(percent)s%" />, document.getElementById('csv-xls-progress-container'));
+						} else {
+							count+=1;
+						}
+					}
+				}, false);
+
+				return xhr;
+			  },   			
 	    	type: 'put',
 	    	url: url,
 	    	data: file,
@@ -126,6 +150,10 @@ module.exports = React.createClass({
     			"content-type": "text/plain"
   			},
 	    	success: function(data){
+	    		ReactDOM.render(<ProgressBar now={100} label="%(percent)s%" />, document.getElementById('csv-xls-progress-container'));
+	    		setTimeout(function() {
+	    			ReactDOM.render(<div></div>, document.getElementById('csv-xls-progress-container'));
+	    		},1500);
 	    		this.setDefaultRelations(data);
 
 	    		this.setState({
@@ -205,6 +233,11 @@ module.exports = React.createClass({
 					   				</Panel>
 					   			</Col>
 					   		</Row>
+							<Row>
+								<Col xs={12}>
+									<div id='csv-xls-progress-container'></div>
+								</Col>
+							</Row>				   		
 						</Panel>
 						<div id="csv-xls-xlsx-importer-content">
 							{content}
