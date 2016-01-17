@@ -36,7 +36,7 @@ module.exports = React.createClass({
     },
 	addRow: function(tableName) {
 		var pid = this.state.rowId
-        var row = $('<tr id="row-'+ tableName + pid + '"><td id="yml-'+ tableName + pid + '"></td><td id="tobox-'+ tableName + pid + '"></td><td id="delete-button-'+ tableName + pid + '"></td></tr>');
+        var row = $('<tr id="row-'+ tableName + pid + '"><td id="yml-'+ tableName + pid + '"></td><td id="tobox-'+ tableName + pid + '"></td><td id="autoupdate-'+ tableName + pid +'" class="col-md-1"><input type="checkbox" value=""></td><td id="delete-button-'+ tableName + pid + '" class="col-md-1"></td></tr>');
         $("#" + tableName).append(row);
 		
 		ReactDOM.render(
@@ -75,7 +75,8 @@ module.exports = React.createClass({
 					  <tr>
 						<th>Attribute name in YML</th>
 						<th>Product Attribute</th>
-						<th></th>
+						<th class="col-md-1">Autoupdate</th>
+						<th class="col-md-1"></th>
 					  </tr>
 					</thead>
 					<tbody id="prod-attr">
@@ -89,7 +90,8 @@ module.exports = React.createClass({
 					  <tr>
 						<th>Param name in YML</th>
 						<th>Product Attribute</th>
-						<th></th>
+						<th class="col-md-1">Autoupdate</th>
+						<th class="col-md-1"></th>
 					  </tr>
 					</thead>
 					<tbody id="prod-param">
