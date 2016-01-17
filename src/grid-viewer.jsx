@@ -1,15 +1,34 @@
+var $ = require('jquery');
+
 var React = require('react');
 
-var BootstrapTable = require('react-bootstrap-table').BootstrapTable;
+var BootstrapTable = window.BootstrapTable;
 var TableHeaderColumn = require('react-bootstrap-table').TableHeaderColumn;
 
 var Nav = require('react-bootstrap').Nav;
 var NavDropdown = require('react-bootstrap').NavDropdown;
 var MenuItem = require('react-bootstrap').MenuItem;
+var Panel = require('react-bootstrap').Panel;
 
 module.exports = React.createClass({
+    displayName: 'GridViewer',
+
     getInitialState: function() {
-        var header = this.props.header.slice();
+        var normalizedData = [];
+        $.each(this.props.data, function(dataIndex, dataValue) {
+            var nextData = {};
+            Object.keys(this.props.products_relations[this.props.sheet]).map(function(header) {
+                nextData[header] = dataValue[Object.keys(this.props.products_relations[this.props.sheet]).indexOf(header)];
+            }.bind(this));
+            normalizedData.push(nextData);
+        }.bind(this));
+
+        return {
+            'products_relations': this.props.products_relations,
+            'normalizedData': normalizedData,
+            'sheet': this.props.sheet
+        };
+        /*var header = this.props.header.slice();
         header.splice(0, 0, "row");
 
         var tobox_header = {};
@@ -40,16 +59,37 @@ module.exports = React.createClass({
             'data': data,
             'isKey': isKey,
             'tobox_header': tobox_header
-        };
+        };*/
     },
 
     onNavClick: function(item, key) {
-        var tobox_header = this.state.tobox_header;
+        /*var tobox_header = this.state.tobox_header;
         tobox_header[item] = key;
 
         this.setState({
             'tobox_header': tobox_header
+        });*/
+    },
+
+    onProductsRelationSet: function(sheet, name, tobox) {
+        var products_relations = this.state.products_relations;
+        products_relations[sheet][name] = tobox;
+
+        this.setState({
+            'products_relations': products_relations
         });
+    },
+
+    onProductsClick: function(e) {
+        var data = e.target.id.split('_');
+
+        var sheet = data[0];
+        var header = data[1];
+        var id = data[2];
+
+        var text = e.target.innerText;
+
+        this.onProductsRelationSet(sheet, header, {title: text, id: id});
     },
 
     componentDidMount: function() {
@@ -57,19 +97,21 @@ module.exports = React.createClass({
 
 	render: function() {
 		return (
-            <BootstrapTable data={this.state.data} striped={true} hover={true} condensed={true} pagination={true}>
-                {this.state.header.map(function(result) {
-                return <TableHeaderColumn isKey={this.state.isKey[result]} key={result} dataField={result}>{result}
+            <BootstrapTable data={this.state.normalizedData} striped={true} hover={true} condensed={true} pagination={true}>
+                {Object.keys(this.state.products_relations[this.state.sheet]).map(function(header) {
+                    return <TableHeaderColumn isKey={Object.keys(this.state.products_relations[this.state.sheet]).indexOf(header) == 0} key={header} dataField={header}>
                         <Nav>
-                            <NavDropdown id={result} title={result + " -> " + this.state.tobox_header[result]}>
+                            <NavDropdown id={header} title={header + " -> " + this.state.products_relations[this.state.sheet][header]['title']}>
                                 {Object.keys(window.products).map(function(key) {
-                                    return <MenuItem key={key} onClick={this.onNavClick.bind(this, result, key)}>{key}</MenuItem>
+                                    return <MenuItem id={this.state.sheet + '_' + header + '_' + window.products[key]} key={key} onClick={this.onProductsClick}>{key}</MenuItem>
                                 }.bind(this))}
                             </NavDropdown>
                         </Nav>
                     </TableHeaderColumn>
                 }.bind(this))}
             </BootstrapTable>
-		);
-	}
+        );
+    }
 });
+
+//onClick={this.onNavClick.bind(this, result, key)}
