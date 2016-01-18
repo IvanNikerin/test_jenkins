@@ -23,10 +23,16 @@ module.exports = React.createClass({
             normalizedData.push(nextData);
         }.bind(this));
 
+        var products_dict = Object.assign({'not selected':-1}, window.products);
+        var product_params = Object.keys(window.products);
+        product_params.unshift('not selected');
+
         return {
             'products_relations': this.props.products_relations,
             'normalizedData': normalizedData,
-            'sheet': this.props.sheet
+            'sheet': this.props.sheet,
+            'product_params_dict': products_dict,
+            'product_params': product_params
         };
         /*var header = this.props.header.slice();
         header.splice(0, 0, "row");
@@ -89,6 +95,22 @@ module.exports = React.createClass({
 
         var text = e.target.innerText;
 
+        var product_params = this.state.product_params;
+        
+        if(text != 'not selected') {
+            product_params.splice(product_params.indexOf(text),1);
+
+            this.setState({
+                'product_params': product_params
+            });
+        }
+        else {
+            var ids = e.target.parentElement.childNodes[0].id.split('_');
+            var title = this.state.products_relations[ids[0]][ids[1]]['title'];
+            if(title != text)
+                product_params.push(this.state.products_relations[ids[0]][ids[1]]['title']);
+        }
+
         this.onProductsRelationSet(sheet, header, {title: text, id: id});
     },
 
@@ -102,8 +124,8 @@ module.exports = React.createClass({
                     return <TableHeaderColumn isKey={Object.keys(this.state.products_relations[this.state.sheet]).indexOf(header) == 0} key={header} dataField={header}>
                         <Nav>
                             <NavDropdown id={header} title={header + " -> " + this.state.products_relations[this.state.sheet][header]['title']}>
-                                {Object.keys(window.products).map(function(key) {
-                                    return <MenuItem id={this.state.sheet + '_' + header + '_' + window.products[key]} key={key} onClick={this.onProductsClick}>{key}</MenuItem>
+                                {this.state.product_params.map(function(key) {
+                                    return <MenuItem id={this.state.sheet + '_' + header + '_' + this.state.product_params_dict[key]} key={key} onClick={this.onProductsClick}>{key}</MenuItem>
                                 }.bind(this))}
                             </NavDropdown>
                         </Nav>

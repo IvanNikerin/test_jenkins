@@ -23,13 +23,13 @@ module.exports = React.createClass({
 
 	getInitialState: function() {
 		return {
-			'relations': {'relation_json': {}},
 			'categories_relations': {},
 			'products_relations': {},
 			'data': {sheets: []},
 			'has_data': false,
 			'userId': this.props.userId,
-			'shopId': this.props.shopId
+			'shopId': this.props.shopId,
+			'fileName': ''
 		};
 	},
 
@@ -108,17 +108,24 @@ module.exports = React.createClass({
 		return result;
 	},
 
-	viewError: function(message) {
+	viewError: function(message, id) {
 		ReactDOM.render(
-   			<Panel header={<h3>Configure data</h3>} bsStyle="danger">
+   			<Panel header={<h3>Error</h3>} bsStyle="danger">
       			<Row>
 					<Col xs={12}>
 						{message}
 					</Col>
 				</Row>
     		</Panel>,
-			document.getElementById('csv-xls-xlsx-importer-content')
+			document.getElementById(id)
 		);
+	},
+
+	hideError: function(id) {
+		ReactDOM.render(
+				<div></div>,
+				document.getElementById(id)
+			);
 	},
 
 	parse: function(file, url) {
@@ -161,7 +168,8 @@ module.exports = React.createClass({
 
 	    		this.setState({
 	    			'data': data,
-	    			'has_data': true
+	    			'has_data': true,
+	    			'fileName': file
 	    		});
 	    	}.bind(this)
    		});
@@ -172,8 +180,11 @@ module.exports = React.createClass({
 
 		var extension = input.files[0].name.split('.').pop();
 
-		var relations = this.state.relations;
-		relations['relation_json']['filename'] = input.files[0].name;
+		this.setState({
+			'has_data': false
+		});
+
+		ReactDOM.render(<div></div>, document.getElementById('csv-xls-update-button'));
 
     	if(extension == "xls" || extension == "xlsx") {
     		this.parse(input.files[0], '/importer/api/parsers/xls/');
@@ -182,22 +193,55 @@ module.exports = React.createClass({
     		this.parse(input.files[0], '/importer/api/parsers/csv/');
     	}
     	else {
-			this.viewError("Bad file type");
+			this.viewError("Bad file type", 'csv-xls-importer-problem');
+			setTimeout(function() {
+				this.hideError('csv-xls-importer-problem');
+			}.bind(this), 7000);
 			return;
     	}
-
-    	this.setState({
-			'relations': relations
-		});
 	},
 
 	uploadFile: function() {
 		var categories_relations = this.state.categories_relations;
 		var products_relations = this.state.products_relations;
 
+		var relations_json = {
+			file: this.state.fileName, relations: {
+				categories:{}, products:{'sheets':{}}
+			}
+		};
+
+		var needed_keys = ['Картинка', 'Заголовок', 'Описание', 'Цена'];
+
 		Object.keys(this.state.data['sheets']).map(function(sheet) {
-			
-		});
+			if(categories_relations[sheet]['id'] != -1) {
+				relations_json['relations']['categories'][sheet] = {
+					title: categories_relations[sheet]['title'],
+					id: categories_relations[sheet]['id']
+				};
+
+				relations_json['relations']['products']['sheets'][sheet] = {};
+
+				this.state.data['sheets'][sheet]['header'].map(function(header) {
+					if(products_relations[sheet][header]['id'] != -1) {
+						var index = needed_keys.indexOf(products_relations[sheet][header]['title'].replace(/\s/g, ''));
+						if(index != -1)
+							needed_keys.splice(index, 1);
+						relations_json['relations']['products']['sheets'][sheet][header] = {
+							'title': products_relations[sheet][header]['title'],
+							'id': products_relations[sheet][header]['id']
+						};
+					}
+				});
+			}
+		}.bind(this));
+
+		if(needed_keys.length != 0) {
+			this.viewError('Check that category selected and required relations: ' + JSON.stringify(needed_keys), 'csv-xls-importer-problem');
+			setTimeout(function() {
+				this.hideError('csv-xls-importer-problem');
+			}.bind(this), 7000);
+		}
 	},
 
 	render: function() {
@@ -255,6 +299,8 @@ module.exports = React.createClass({
 								</Col>
 							</Row>			   		
 						</Panel>
+						<div id="csv-xls-importer-problem">
+						</div>
 						<div id="csv-xls-xlsx-importer-content">
 							{content}
 			    		</div>

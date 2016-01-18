@@ -1,2 +1,2 @@
 window.categories = [];
-window.products = {'Картинка': 'picture', 'Заголовок': 'title', 'Описание': 'description', 'Скрытое': 'hidden', 'Цена': 'price'};
+window.products = {'Картинка': 'picture', 'Заголовок': 'title', 'Описание': 'description', 'Видимость': 'hidden', 'Цена': 'price'};
