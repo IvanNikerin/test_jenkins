@@ -76,14 +76,15 @@ module.exports = React.createClass({displayName: 'Content',
                 'Content-Type': 'application/json'
             },
             success: function(data){
-                if (this.isMounted()) {
+                /*if (this.isMounted()) {
                     this.setState({
                         token: $.cookie('toboxkey'),
                         tokens: $.cookie('toboxskey')
                     });
 
                     this.processTobox();
-                }
+                }*/
+                this.getCategories();
             }.bind(this),
             error: function (xhr, ajaxOptions, thrownError) {
                 alert(xhr.status);
@@ -104,7 +105,7 @@ module.exports = React.createClass({displayName: 'Content',
 						<YmlImporter shopId={this.state.shopId} />
 					</Tab>
     				<Tab eventKey={2} title="CSV XLS XLSX importer">
-    					<CsvXlsImporter userId={this.state.userId} shopId={this.state.shopId}/>
+    					<CsvXlsImporter userId={this.state.userId} shopId={this.state.shopId} token={this.state.token}/>
     				</Tab>
     			</Tabs>
 			</div>

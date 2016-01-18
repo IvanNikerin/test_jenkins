@@ -21,16 +21,43 @@ var GridViewer = require('./grid-viewer');
 module.exports = React.createClass({
 	displayName: 'CsvXlsImporter',
 
+	getProfile: function() {
+        $.ajax({
+            type: "post",
+            url: '/tobox/api/beta/profile',
+            crossDomain: true,
+            contentType: 'application/json',
+            dataType: 'json',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            success: function(data){
+                if (this.isMounted()) {
+                    this.setState({
+                        shopId: data["shopIds"][0],
+                        userId: data["userId"]
+                    });
+                }
+            }.bind(this)
+        });        
+    },
+
 	getInitialState: function() {
 		return {
 			'categories_relations': {},
 			'products_relations': {},
 			'data': {sheets: []},
 			'has_data': false,
-			'userId': this.props.userId,
-			'shopId': this.props.shopId,
-			'fileName': ''
+			'userId': '',
+			'shopId': '',
+			'fileName': '',
+			'token': $.cookie('toboxkey'),
+			'tokens': $.cookie('toboxskey')
 		};
+	},
+
+	componentDidMount: function() {
+		this.getProfile();
 	},
 
 	onCategoriesRelationSet: function(sheet, tobox) {
@@ -93,13 +120,13 @@ module.exports = React.createClass({
 		childs.map(function(child) {
 			if(child['child'].length == 0) {
 				result.push(
-					<MenuItem id={sheet + '_' + child['id']} key={child['id']}>{child['title']}</MenuItem>
+					<MenuItem id={sheet + '_' + child['id']} key={child['id']} onClick={this.onCategoriesClick}>{child['title']}</MenuItem>
 				);
 				return result;
 			}
 
 			result.push(
-				<NavDropdown id={sheet + '_' + child['id']} title={child['title']} key={child['id']} onClick={this.onCategoriesClick}>
+				<NavDropdown id={sheet + '_' + child['id']} title={child['title']} key={child['id']}>
 					{this.generateCategoriesView(sheet, child['child'])}
 	    		</NavDropdown>
 			);
@@ -162,7 +189,7 @@ module.exports = React.createClass({
 	    		ReactDOM.render(<ProgressBar now={100} label="%(percent)s%" />, document.getElementById('csv-xls-progress-container'));
 	    		setTimeout(function() {
 	    			ReactDOM.render(<div></div>, document.getElementById('csv-xls-progress-container'));
-	    			ReactDOM.render(<ButtonInput  bsStyle="primary" value="Upload" onClick={this.uploadFile}/>, document.getElementById('csv-xls-update-button'));
+	    			ReactDOM.render(<ButtonInput  bsStyle="primary" value="Upload" onClick={this.prepareUpdate}/>, document.getElementById('csv-xls-update-button'));
 	    		}.bind(this),1500);
 	    		this.setDefaultRelations(data);
 
@@ -201,12 +228,30 @@ module.exports = React.createClass({
     	}
 	},
 
-	uploadFile: function() {
+	postUpdate: function(relation_json) {
+		$.ajax({  			
+	    	type: 'post',
+	    	url: '/importer/api/tobox/relations/',
+	    	data: {
+	    		user_id: this.state.userId,
+	    		shop_id: this.state.shopId,
+	    		relation_json: JSON.stringify(relation_json),
+	    		data: 'something',
+	    		file_type: 'csv-xls',
+	    		token: this.state.token
+	    	},
+	    	success: function(data){
+	    		console.log(data);
+	    	}
+   		});
+	},
+
+	prepareUpdate: function() {
 		var categories_relations = this.state.categories_relations;
 		var products_relations = this.state.products_relations;
 
-		var relations_json = {};
-		relations_json[this.state.fileName] = {relations: {
+		var relation_json = {};
+		relation_json[this.state.fileName] = {relations: {
 			categories:{}, products:{'sheets':{}}
 		}};
 
@@ -218,19 +263,19 @@ module.exports = React.createClass({
 
 		Object.keys(this.state.data['sheets']).map(function(sheet) {
 			if(categories_relations[sheet]['id'] != -1) {
-				relations_json[this.state.fileName]['relations']['categories'][sheet] = {
+				relation_json[this.state.fileName]['relations']['categories'][sheet] = {
 					title: categories_relations[sheet]['title'],
 					id: categories_relations[sheet]['id']
 				};
 
-				relations_json[this.state.fileName]['relations']['products']['sheets'][sheet] = {};
+				relation_json[this.state.fileName]['relations']['products']['sheets'][sheet] = {};
 
 				this.state.data['sheets'][sheet]['header'].map(function(header) {
 					if(products_relations[sheet][header]['id'] != -1) {
 						var index = needed_keys[sheet].indexOf(products_relations[sheet][header]['title'].replace(/\s/g, ''));
 						if(index != -1)
 							needed_keys[sheet].splice(index, 1);
-						relations_json[this.state.fileName]['relations']['products']['sheets'][sheet][header] = {
+						relation_json[this.state.fileName]['relations']['products']['sheets'][sheet][header] = {
 							'title': products_relations[sheet][header]['title'],
 							'id': products_relations[sheet][header]['id']
 						};
@@ -240,8 +285,12 @@ module.exports = React.createClass({
 		}.bind(this));
 
 		error = "";
+
+		var error_count = 0;
+
 		Object.keys(this.state.data['sheets']).map(function(sheet) {
 			if(needed_keys[sheet].length != 0) {
+				error_count ++;
 				error = error + '! Check that category selected and required relations: ' + JSON.stringify(needed_keys[sheet]) + ' for sheet: ' + sheet;
 			}
 		});
@@ -251,6 +300,11 @@ module.exports = React.createClass({
 			setTimeout(function() {
 				this.hideError('csv-xls-importer-problem');
 			}.bind(this), 7000);
+		}
+		
+		if(error_count < Object.keys(this.state.data['sheets']).length)
+		{
+			this.postUpdate(relation_json);
 		}
 	},
 

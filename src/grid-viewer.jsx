@@ -98,11 +98,18 @@ module.exports = React.createClass({
         var product_params = this.state.product_params;
         
         if(text != 'not selected') {
-            product_params.splice(product_params.indexOf(text),1);
+            var ids = e.target.parentElement.childNodes[0].id.split('_');
+            var title = this.state.products_relations[ids[0]][ids[1]]['title'];
 
-            this.setState({
-                'product_params': product_params
-            });
+            if(title == 'not selected')
+            {
+                product_params.splice(product_params.indexOf(text),1);
+            }
+            else {
+                product_params.splice(product_params.indexOf(text),1);
+                if(title != text)
+                    product_params.push(this.state.products_relations[ids[0]][ids[1]]['title']);
+            }
         }
         else {
             var ids = e.target.parentElement.childNodes[0].id.split('_');
@@ -110,6 +117,10 @@ module.exports = React.createClass({
             if(title != text)
                 product_params.push(this.state.products_relations[ids[0]][ids[1]]['title']);
         }
+
+        this.setState({
+            'product_params': product_params
+        });
 
         this.onProductsRelationSet(sheet, header, {title: text, id: id});
     },
