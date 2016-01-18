@@ -21,7 +21,8 @@ module.exports = React.createClass({
 	displayName: 'YmlImporter',
 	getInitialState: function() {
 		return {
-		     file: ""
+		     file: "",
+			 data: []
 		};
 	},
 	
@@ -112,7 +113,14 @@ module.exports = React.createClass({
 			data_params.push(tmp);
 		});
 		
-		console.log(relation_data);
+   		$.ajax({
+	    	type: 'post',
+	    	url: '/importer/api/tobox/relations/',
+	    	data: {user_id:'test', shop_id:'test', update_url:'url', relation_json:relation_data, autoupdate:true, data:this.state.data, type:'yml'},
+	    	success: function(data){
+				console.log(data);
+	    	}.bind(this)
+   		});
 	},
 	
 	parse: function() {
@@ -150,6 +158,7 @@ module.exports = React.createClass({
     			"content-type": "text/plain"
   			},
 	    	success: function(data){
+				this.setState({data: data});
 	    		this.viewYml(data);
 				ReactDOM.render(<ProgressBar now={100} label="%(percent)s%" />, document.getElementById('progress-container'));
 	    	}.bind(this)
@@ -158,12 +167,13 @@ module.exports = React.createClass({
 
 	handleFile: function(event) {
 		this.setState({file: ''});
+		this.setState({data: []});
 		
     	var input = event.target;
 
 		var extension = input.files[0].name.split('.').pop();
 
-		var json_result = {};
+
 
     	if(extension == "yml" || extension == "xml") {
 
