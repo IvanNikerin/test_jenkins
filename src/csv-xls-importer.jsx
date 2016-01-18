@@ -169,7 +169,7 @@ module.exports = React.createClass({
 	    		this.setState({
 	    			'data': data,
 	    			'has_data': true,
-	    			'fileName': file
+	    			'fileName': file.name
 	    		});
 	    	}.bind(this)
    		});
@@ -205,11 +205,10 @@ module.exports = React.createClass({
 		var categories_relations = this.state.categories_relations;
 		var products_relations = this.state.products_relations;
 
-		var relations_json = {
-			file: this.state.fileName, relations: {
-				categories:{}, products:{'sheets':{}}
-			}
-		};
+		var relations_json = {};
+		relations_json[this.state.fileName] = {relations: {
+			categories:{}, products:{'sheets':{}}
+		}};
 
 		var needed_keys = {};
 
@@ -219,24 +218,24 @@ module.exports = React.createClass({
 
 		Object.keys(this.state.data['sheets']).map(function(sheet) {
 			if(categories_relations[sheet]['id'] != -1) {
-				relations_json['relations']['categories'][sheet] = {
+				relations_json[this.state.fileName]['relations']['categories'][sheet] = {
 					title: categories_relations[sheet]['title'],
 					id: categories_relations[sheet]['id']
 				};
 
-				relations_json['relations']['products']['sheets'][sheet] = {};
+				relations_json[this.state.fileName]['relations']['products']['sheets'][sheet] = {};
 
 				this.state.data['sheets'][sheet]['header'].map(function(header) {
 					if(products_relations[sheet][header]['id'] != -1) {
 						var index = needed_keys[sheet].indexOf(products_relations[sheet][header]['title'].replace(/\s/g, ''));
 						if(index != -1)
 							needed_keys[sheet].splice(index, 1);
-						relations_json['relations']['products']['sheets'][sheet][header] = {
+						relations_json[this.state.fileName]['relations']['products']['sheets'][sheet][header] = {
 							'title': products_relations[sheet][header]['title'],
 							'id': products_relations[sheet][header]['id']
 						};
 					}
-				});
+				}.bind(this));
 			}
 		}.bind(this));
 
