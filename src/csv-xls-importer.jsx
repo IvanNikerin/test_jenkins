@@ -155,6 +155,47 @@ module.exports = React.createClass({
 			);
 	},
 
+	getRelations: function(data, filename) {
+		$.ajax({
+	    	type: 'get',
+	    	url: '/importer/api/tobox/relations/',
+	    	data: {
+	    		user_id: this.state.userId
+	    	},
+	    	success: function(result){
+	    		var relation_json = JSON.parse(result['relation_json']);
+
+	    		if(filename in relation_json) {
+	    			Object.keys(relation_json[filename]['relations']['categories']).map(function(sheet) {
+	    				if (sheet in data['sheets']) {
+	    					var categories_relations = this.state.categories_relations;
+	    					categories_relations[sheet] = relation_json[filename]['relations']['categories'][sheet];
+	    					this.setState({
+	    						'categories_relations': categories_relations
+	    					});
+	    				}
+	    			}.bind(this));
+
+	    			Object.keys(relation_json[filename]['relations']['products']['sheets']).map(function(sheet) {
+	    				if(sheet in data['sheets']) {
+	    					Object.keys(relation_json[filename]['relations']['products']['sheets'][sheet]).map(function(header) {
+	    						if(data['sheets'][sheet]['header'].indexOf(header) != -1) {
+	    							var products_relations = this.state.products_relations;
+	    							
+	    							products_relations[sheet][header] = relation_json[filename]['relations']['products']['sheets'][sheet][header];
+	    							
+	    							this.setState({
+	    								'products_relations': products_relations
+	    							});
+	    						}
+	    					}.bind(this));
+	    				}
+	    			}.bind(this));
+	    		}
+	    	}.bind(this)
+   		});
+	},
+
 	parse: function(file, url) {
 		ReactDOM.render(<ProgressBar now={0} label="%(percent)s%" />, document.getElementById('csv-xls-progress-container'));
    		$.ajax({
@@ -191,7 +232,10 @@ module.exports = React.createClass({
 	    			ReactDOM.render(<div></div>, document.getElementById('csv-xls-progress-container'));
 	    			ReactDOM.render(<ButtonInput  bsStyle="primary" value="Upload" onClick={this.prepareUpdate}/>, document.getElementById('csv-xls-update-button'));
 	    		}.bind(this),1500);
+
 	    		this.setDefaultRelations(data);
+
+	    		this.getRelations(data, file.name);
 
 	    		this.setState({
 	    			'data': data,
