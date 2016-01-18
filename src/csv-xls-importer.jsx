@@ -27,7 +27,9 @@ module.exports = React.createClass({
 			'categories_relations': {},
 			'products_relations': {},
 			'data': {sheets: []},
-			'has_data': false
+			'has_data': false,
+			'userId': this.props.userId,
+			'shopId': this.props.shopId
 		};
 	},
 
@@ -153,7 +155,8 @@ module.exports = React.createClass({
 	    		ReactDOM.render(<ProgressBar now={100} label="%(percent)s%" />, document.getElementById('csv-xls-progress-container'));
 	    		setTimeout(function() {
 	    			ReactDOM.render(<div></div>, document.getElementById('csv-xls-progress-container'));
-	    		},1500);
+	    			ReactDOM.render(<ButtonInput  bsStyle="primary" value="Upload" onClick={this.uploadFile}/>, document.getElementById('csv-xls-update-button'));
+	    		}.bind(this),1500);
 	    		this.setDefaultRelations(data);
 
 	    		this.setState({
@@ -185,6 +188,15 @@ module.exports = React.createClass({
 
     	this.setState({
 			'relations': relations
+		});
+	},
+
+	uploadFile: function() {
+		var categories_relations = this.state.categories_relations;
+		var products_relations = this.state.products_relations;
+
+		Object.keys(this.state.data['sheets']).map(function(sheet) {
+			
 		});
 	},
 
@@ -234,10 +246,14 @@ module.exports = React.createClass({
 					   			</Col>
 					   		</Row>
 							<Row>
+								<Col xs={3}>
+									<div id="csv-xls-update-button">
+									</div>
+								</Col>
 								<Col xs={12}>
 									<div id='csv-xls-progress-container'></div>
 								</Col>
-							</Row>				   		
+							</Row>			   		
 						</Panel>
 						<div id="csv-xls-xlsx-importer-content">
 							{content}

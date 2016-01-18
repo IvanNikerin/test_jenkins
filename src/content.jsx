@@ -14,11 +14,12 @@ module.exports = React.createClass({displayName: 'Content',
         return {
             token: '',
             tokens: '',
-            shopId: ''
+            shopId: '',
+            userId: ''
         };
     },
 
-    getShop: function() {
+    getProfile: function() {
         $.ajax({
             type: "post",
             url: '/tobox/api/beta/profile',
@@ -31,7 +32,8 @@ module.exports = React.createClass({displayName: 'Content',
             success: function(data){
                 if (this.isMounted()) {
                     this.setState({
-                        shopId: data["shopIds"][0]
+                        shopId: data["shopIds"][0],
+                        userId: data["userId"]
                     });
                 }
             }.bind(this)
@@ -58,42 +60,36 @@ module.exports = React.createClass({displayName: 'Content',
     },
 
     processTobox: function() {
-        this.getShop();
+        this.getProfile();
         this.getCategories();
     },
 
     login: function() {
-        if($.cookie('toboxkey') == null)
-        {
-            $.ajax({
-                type: "post",
-                url: '/tobox/api/beta/auth/phone/login',
-                data: JSON.stringify({phoneNumber: '79689854262', password: '123456'}),
-                crossDomain: true,
-                contentType: 'application/json',
-                dataType: 'json',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                success: function(data){
-                    if (this.isMounted()) {
-                        this.setState({
-                            token: $.cookie('toboxkey'),
-                            tokens: $.cookie('toboxskey')
-                        });
+        $.ajax({
+            type: "post",
+            url: '/tobox/api/beta/auth/phone/login',
+            data: JSON.stringify({phoneNumber: '79689854262', password: '123456'}),
+            crossDomain: true,
+            contentType: 'application/json',
+            dataType: 'json',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            success: function(data){
+                if (this.isMounted()) {
+                    this.setState({
+                        token: $.cookie('toboxkey'),
+                        tokens: $.cookie('toboxskey')
+                    });
 
-                        this.processTobox();
-                    }
-                }.bind(this),
-                error: function (xhr, ajaxOptions, thrownError) {
-                    alert(xhr.status);
-                    alert(thrownError);
+                    this.processTobox();
                 }
-            });
-        }
-        else {
-            this.processTobox();
-        }
+            }.bind(this),
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.status);
+                alert(thrownError);
+            }
+        });
     },
 
     componentDidMount: function() {
@@ -108,7 +104,7 @@ module.exports = React.createClass({displayName: 'Content',
 						<YmlImporter shopId={this.state.shopId} />
 					</Tab>
     				<Tab eventKey={2} title="CSV XLS XLSX importer">
-    					<CsvXlsImporter shopId={this.state.shopId}/>
+    					<CsvXlsImporter userId={this.state.userId} shopId={this.state.shopId}/>
     				</Tab>
     			</Tabs>
 			</div>
