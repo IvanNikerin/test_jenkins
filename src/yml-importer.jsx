@@ -75,11 +75,12 @@ module.exports = React.createClass({
 	uploadFile : function() {
 		var relation_data = {};
 		
-		var data_cats = new Array();
+		var data_cats = {};
 		$('#table-cat > tr').each(function() {
-			var selects = this.getElementsByTagName('select');
-			if(selects.length > 1) {
-				data_cats.push({'yml':selects[0].value, 'tobox':selects[1].value});
+			var ul = this.getElementsByTagName('ul');
+			if(ul.length > 0) {
+				data_cats[ul[0].getAttribute("data-selected")] = ul[0].getAttribute("data-selected");
+				//data_cats.push({'yml':selects[0].value, 'tobox':selects[1].value});
 			}
 		});
 		
@@ -113,14 +114,22 @@ module.exports = React.createClass({
 			data_params.push(tmp);
 		});
 		
+		relation_data['categories'] = data_cats;
+		relation_data['attrs'] = data_attrs;
+		relation_data['params'] = data_params;
+		console.log(relation_data);
+		
+		
+		/*
+		var ajax_data = this.state.data;
    		$.ajax({
 	    	type: 'post',
 	    	url: '/importer/api/tobox/relations/',
-	    	data: {user_id:'test', shop_id:'test', update_url:'url', relation_json:relation_data, autoupdate:true, data:this.state.data, type:'yml'},
+	    	data: {user_id:'test', shop_id:'test', update_url:'url', relation_json:JSON.stringify(relation_data), autoupdate:true, data:JSON.stringify(ajax_data), file_type:'yml'},
 	    	success: function(data){
 				console.log(data);
 	    	}.bind(this)
-   		});
+   		});*/
 	},
 	
 	parse: function() {
@@ -158,7 +167,7 @@ module.exports = React.createClass({
     			"content-type": "text/plain"
   			},
 	    	success: function(data){
-				this.setState({data: data});
+				this.setState({data: data['data']});
 	    		this.viewYml(data);
 				ReactDOM.render(<ProgressBar now={100} label="%(percent)s%" />, document.getElementById('progress-container'));
 	    	}.bind(this)
