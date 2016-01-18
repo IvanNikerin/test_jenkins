@@ -160,37 +160,40 @@ module.exports = React.createClass({
 	    	type: 'get',
 	    	url: '/importer/api/tobox/relations/',
 	    	data: {
-	    		user_id: this.state.userId
+	    		user_id: this.state.userId,
+	    		file_name: filename
 	    	},
 	    	success: function(result){
-	    		var relation_json = JSON.parse(result['relation_json']);
+	    		if(!('error' in result)) {
+		    		var relation_json = JSON.parse(result['relation_json']);
 
-	    		if(filename in relation_json) {
-	    			Object.keys(relation_json[filename]['relations']['categories']).map(function(sheet) {
-	    				if (sheet in data['sheets']) {
-	    					var categories_relations = this.state.categories_relations;
-	    					categories_relations[sheet] = relation_json[filename]['relations']['categories'][sheet];
-	    					this.setState({
-	    						'categories_relations': categories_relations
-	    					});
-	    				}
-	    			}.bind(this));
+		    		if(result['file_name'] == filename) {
+		    			Object.keys(relation_json['categories']).map(function(sheet) {
+		    				if (sheet in data['sheets']) {
+		    					var categories_relations = this.state.categories_relations;
+		    					categories_relations[sheet] = relation_json['categories'][sheet];
+		    					this.setState({
+		    						'categories_relations': categories_relations
+		    					});
+		    				}
+		    			}.bind(this));
 
-	    			Object.keys(relation_json[filename]['relations']['products']['sheets']).map(function(sheet) {
-	    				if(sheet in data['sheets']) {
-	    					Object.keys(relation_json[filename]['relations']['products']['sheets'][sheet]).map(function(header) {
-	    						if(data['sheets'][sheet]['header'].indexOf(header) != -1) {
-	    							var products_relations = this.state.products_relations;
-	    							
-	    							products_relations[sheet][header] = relation_json[filename]['relations']['products']['sheets'][sheet][header];
-	    							
-	    							this.setState({
-	    								'products_relations': products_relations
-	    							});
-	    						}
-	    					}.bind(this));
-	    				}
-	    			}.bind(this));
+		    			Object.keys(relation_json['products']['sheets']).map(function(sheet) {
+		    				if(sheet in data['sheets']) {
+		    					Object.keys(relation_json['products']['sheets'][sheet]).map(function(header) {
+		    						if(data['sheets'][sheet]['header'].indexOf(header) != -1) {
+		    							var products_relations = this.state.products_relations;
+		    							
+		    							products_relations[sheet][header] = relation_json['products']['sheets'][sheet][header];
+		    							
+		    							this.setState({
+		    								'products_relations': products_relations
+		    							});
+		    						}
+		    					}.bind(this));
+		    				}
+		    			}.bind(this));
+		    		}
 	    		}
 	    	}.bind(this)
    		});
@@ -281,6 +284,7 @@ module.exports = React.createClass({
 	    		shop_id: this.state.shopId,
 	    		relation_json: JSON.stringify(relation_json),
 	    		data: 'something',
+	    		file_name: this.state.fileName,
 	    		file_type: 'csv-xls',
 	    		token: this.state.token
 	    	},
@@ -294,10 +298,9 @@ module.exports = React.createClass({
 		var categories_relations = this.state.categories_relations;
 		var products_relations = this.state.products_relations;
 
-		var relation_json = {};
-		relation_json[this.state.fileName] = {relations: {
+		var relation_json = {
 			categories:{}, products:{'sheets':{}}
-		}};
+		};
 
 		var needed_keys = {};
 
@@ -307,19 +310,19 @@ module.exports = React.createClass({
 
 		Object.keys(this.state.data['sheets']).map(function(sheet) {
 			if(categories_relations[sheet]['id'] != -1) {
-				relation_json[this.state.fileName]['relations']['categories'][sheet] = {
+				relation_json['categories'][sheet] = {
 					title: categories_relations[sheet]['title'],
 					id: categories_relations[sheet]['id']
 				};
 
-				relation_json[this.state.fileName]['relations']['products']['sheets'][sheet] = {};
+				relation_json['products']['sheets'][sheet] = {};
 
 				this.state.data['sheets'][sheet]['header'].map(function(header) {
 					if(products_relations[sheet][header]['id'] != -1) {
 						var index = needed_keys[sheet].indexOf(products_relations[sheet][header]['title'].replace(/\s/g, ''));
 						if(index != -1)
 							needed_keys[sheet].splice(index, 1);
-						relation_json[this.state.fileName]['relations']['products']['sheets'][sheet][header] = {
+						relation_json['products']['sheets'][sheet][header] = {
 							'title': products_relations[sheet][header]['title'],
 							'id': products_relations[sheet][header]['id']
 						};
