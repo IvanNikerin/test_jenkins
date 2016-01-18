@@ -108,9 +108,9 @@ module.exports = React.createClass({
 		return result;
 	},
 
-	viewError: function(message, id) {
+	viewError: function(message, id, title) {
 		ReactDOM.render(
-   			<Panel header={<h3>Error</h3>} bsStyle="danger">
+   			<Panel header={<h3>{title}</h3>} bsStyle="danger">
       			<Row>
 					<Col xs={12}>
 						{message}
@@ -193,7 +193,7 @@ module.exports = React.createClass({
     		this.parse(input.files[0], '/importer/api/parsers/csv/');
     	}
     	else {
-			this.viewError("Bad file type", 'csv-xls-importer-problem');
+			this.viewError("Bad file type", 'csv-xls-importer-problem', 'Error');
 			setTimeout(function() {
 				this.hideError('csv-xls-importer-problem');
 			}.bind(this), 7000);
@@ -211,7 +211,11 @@ module.exports = React.createClass({
 			}
 		};
 
-		var needed_keys = ['Картинка', 'Заголовок', 'Описание', 'Цена'];
+		var needed_keys = {};
+
+		Object.keys(this.state.data['sheets']).map(function(sheet) {
+			needed_keys[sheet] = ['Картинка', 'Заголовок', 'Описание', 'Цена'];
+		});
 
 		Object.keys(this.state.data['sheets']).map(function(sheet) {
 			if(categories_relations[sheet]['id'] != -1) {
@@ -224,9 +228,9 @@ module.exports = React.createClass({
 
 				this.state.data['sheets'][sheet]['header'].map(function(header) {
 					if(products_relations[sheet][header]['id'] != -1) {
-						var index = needed_keys.indexOf(products_relations[sheet][header]['title'].replace(/\s/g, ''));
+						var index = needed_keys[sheet].indexOf(products_relations[sheet][header]['title'].replace(/\s/g, ''));
 						if(index != -1)
-							needed_keys.splice(index, 1);
+							needed_keys[sheet].splice(index, 1);
 						relations_json['relations']['products']['sheets'][sheet][header] = {
 							'title': products_relations[sheet][header]['title'],
 							'id': products_relations[sheet][header]['id']
@@ -236,8 +240,15 @@ module.exports = React.createClass({
 			}
 		}.bind(this));
 
-		if(needed_keys.length != 0) {
-			this.viewError('Check that category selected and required relations: ' + JSON.stringify(needed_keys), 'csv-xls-importer-problem');
+		error = "";
+		Object.keys(this.state.data['sheets']).map(function(sheet) {
+			if(needed_keys[sheet].length != 0) {
+				error = error + '! Check that category selected and required relations: ' + JSON.stringify(needed_keys[sheet]) + ' for sheet: ' + sheet;
+			}
+		});
+		if(error != "") {
+			error = error.slice(2);
+			this.viewError(error, 'csv-xls-importer-problem', 'Warning');
 			setTimeout(function() {
 				this.hideError('csv-xls-importer-problem');
 			}.bind(this), 7000);
