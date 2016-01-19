@@ -15,6 +15,7 @@ var MenuItem = require('react-bootstrap').MenuItem;
 var Button = require('react-bootstrap').Button;
 var ButtonInput = require('react-bootstrap').ButtonInput;
 var ProgressBar = require('react-bootstrap').ProgressBar;
+var DropdownButton = require('react-bootstrap').DropdownButton;
 
 var GridViewer = require('./grid-viewer');
 
@@ -79,7 +80,7 @@ module.exports = React.createClass({
 			products_relations[sheet] = {};
 			
 			$.each(data['sheets'][sheet]['header'], function(){
-				products_relations[sheet][this] = {title: 'not selected', id: -1};
+				products_relations[sheet][this] = {title: 'not selected', id: -1, 'is_primary': false};
 			});
 		});
 
@@ -283,7 +284,7 @@ module.exports = React.createClass({
 	    		user_id: this.state.userId,
 	    		shop_id: this.state.shopId,
 	    		relation_json: JSON.stringify(relation_json),
-	    		data: 'something',
+	    		data: JSON.stringify(this.state.data),
 	    		file_name: this.state.fileName,
 	    		file_type: 'csv-xls',
 	    		token: this.state.token
@@ -323,8 +324,9 @@ module.exports = React.createClass({
 						if(index != -1)
 							needed_keys[sheet].splice(index, 1);
 						relation_json['products']['sheets'][sheet][header] = {
-							'title': products_relations[sheet][header]['title'],
-							'id': products_relations[sheet][header]['id']
+							title: products_relations[sheet][header]['title'],
+							id: products_relations[sheet][header]['id'],
+							is_primary: products_relations[sheet][header]['is_primary']
 						};
 					}
 				}.bind(this));

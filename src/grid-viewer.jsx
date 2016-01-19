@@ -9,6 +9,7 @@ var Nav = require('react-bootstrap').Nav;
 var NavDropdown = require('react-bootstrap').NavDropdown;
 var MenuItem = require('react-bootstrap').MenuItem;
 var Panel = require('react-bootstrap').Panel;
+var DropdownButton = require('react-bootstrap').DropdownButton;
 
 module.exports = React.createClass({
     displayName: 'GridViewer',
@@ -27,12 +28,19 @@ module.exports = React.createClass({
         var product_params = Object.keys(window.products);
         product_params.unshift('not selected');
 
+        var primary_dict = {};
+
+        Object.keys(this.props.products_relations[this.props.sheet]).map(function(header) {
+            primary_dict[header] = false;
+        });
+
         return {
             'products_relations': this.props.products_relations,
             'normalizedData': normalizedData,
             'sheet': this.props.sheet,
             'product_params_dict': products_dict,
-            'product_params': product_params
+            'product_params': product_params,
+            'primary_dict': primary_dict
         };
         /*var header = this.props.header.slice();
         header.splice(0, 0, "row");
@@ -122,27 +130,71 @@ module.exports = React.createClass({
             'product_params': product_params
         });
 
-        this.onProductsRelationSet(sheet, header, {title: text, id: id});
+        this.onProductsRelationSet(sheet, header, {title: text, id: id, 'is_primary': this.state.primary_dict[header]});
+    },
+
+    onPrimaryClick: function(e) {
+        var primary_dict = this.state.primary_dict;
+        var products_relations = this.state.products_relations;
+
+        Object.keys(primary_dict).map(function(key){
+            primary_dict[key] = false;
+        });
+
+        primary_dict[e.target.text] = true;
+
+        Object.keys(products_relations[this.state.sheet]).map(function(header) {
+            if(primary_dict[header])
+            {
+                products_relations[this.state.sheet][header]['is_primary']=true;
+            }
+            else {
+                products_relations[this.state.sheet][header]['is_primary']=false;
+            }
+        }.bind(this));
+
+        this.setState({
+            'products_relations': products_relations,
+            'primary_dict': primary_dict
+        })
     },
 
     componentDidMount: function() {
     },
 
 	render: function() {
+        var primary_keys_list = [];
+        var primary_text = ": not selected";
+
+        Object.keys(this.state.products_relations[this.state.sheet]).map(function(header) {
+            if(this.state.products_relations[this.state.sheet][header]['id'] != -1) {
+                if(this.state.products_relations[this.state.sheet][header]['is_primary']) {
+                    this.state.primary_dict[header] = true;
+                    primary_text = ": " + header;
+                }
+                primary_keys_list.push(<MenuItem key={header} onClick={this.onPrimaryClick} value={header}>{header}</MenuItem>);
+            }
+        }.bind(this));
+
 		return (
-            <BootstrapTable data={this.state.normalizedData} striped={true} hover={true} condensed={true} pagination={true}>
-                {Object.keys(this.state.products_relations[this.state.sheet]).map(function(header) {
-                    return <TableHeaderColumn isKey={Object.keys(this.state.products_relations[this.state.sheet]).indexOf(header) == 0} key={header} dataField={header}>
-                        <Nav>
-                            <NavDropdown id={header} title={header + " -> " + this.state.products_relations[this.state.sheet][header]['title']}>
-                                {this.state.product_params.map(function(key) {
-                                    return <MenuItem id={this.state.sheet + '_' + header + '_' + this.state.product_params_dict[key]} key={key} onClick={this.onProductsClick}>{key}</MenuItem>
-                                }.bind(this))}
-                            </NavDropdown>
-                        </Nav>
-                    </TableHeaderColumn>
-                }.bind(this))}
-            </BootstrapTable>
+            <div>
+                <DropdownButton title={"Primary key" + primary_text} id="bg-nested-dropdown">
+                    {primary_keys_list}
+                </DropdownButton>
+                <BootstrapTable data={this.state.normalizedData} striped={true} hover={true} condensed={true} pagination={true}>
+                    {Object.keys(this.state.products_relations[this.state.sheet]).map(function(header) {
+                        return <TableHeaderColumn isKey={Object.keys(this.state.products_relations[this.state.sheet]).indexOf(header) == 0} key={header} dataField={header}>
+                            <Nav>
+                                <NavDropdown id={header} title={header + " -> " + this.state.products_relations[this.state.sheet][header]['title']}>
+                                    {this.state.product_params.map(function(key) {
+                                        return <MenuItem id={this.state.sheet + '_' + header + '_' + this.state.product_params_dict[key]} key={key} onClick={this.onProductsClick}>{key}</MenuItem>
+                                    }.bind(this))}
+                                </NavDropdown>
+                            </Nav>
+                        </TableHeaderColumn>
+                    }.bind(this))}
+                </BootstrapTable>
+            </div>
         );
     }
 });
