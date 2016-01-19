@@ -24,9 +24,18 @@ module.exports = React.createClass({
 	//	);
 	//}
 	
-	generateCategoriesView: function(childs, rowId) {
+	generateCategoriesView: function(node, rowId) {
 		var result = [];
 		
+		
+		for(var key in node) {
+			var cat = node[key];
+			if(Object.keys(cat['child']).length === 0) {
+				this.addRow();
+				return;
+			}
+			this.renderRow(cat['child']);
+		}
 		
 		for(var i=0; i<childs.length; i++ ) {
 			var child = childs[i];
@@ -49,7 +58,6 @@ module.exports = React.createClass({
 	
 	render: function() {
 		var tmp = this.props.data;
-		console.log(tmp);
 		return (
 			<Nav>
 				<NavDropdown id={'tobox-cat-' + id} title={'not selected'} data-selected='-1'>
