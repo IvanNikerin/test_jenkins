@@ -24,42 +24,59 @@ module.exports = React.createClass({
 	},
 	
 	
-	renderRow: function(i) {
-		var cats = this.state.cats;
-		var len = cats.length;
-		console.log(cats);
-		
-		if(i < 2) {
-			this.addRow();
-			this.rowSelect(this.state.rowId, [cats[i]['cat_id'], '']);
-			var self = this;
-			setTimeout(function() {
-				i+=1;
-				self.renderRow(i)
-			},50)
+	renderRow: function(node) {
+		for(var key in node) {
+			var cat = node[key];
+			if(Object.keys(cat['child']).length === 0) {
+				this.addRow();
+				this.rowSelect(this.state.rowId, [[cat['id'],cat['title']], '']);
+				return;
+			}
+			this.renderRow(cat['child']);
 		}
+		
+		
+		//if(i < len) {
+		//	this.addRow();
+		//	this.rowSelect(this.state.rowId, [cats[i]['cat_id'], '']);
+		//	var self = this;
+		//	setTimeout(function() {
+		//		i+=1;
+		//		self.renderRow(i)
+		//	},50)
+		//}
 		
 	},
 	
 	
 	componentDidMount: function() {
-		this.renderRow(0);
+		var cats = this.state.cats;
+		this.renderRow(cats);
     },
 	
 	onCategoryClick: function(e) {
 		var elem = document.getElementById('tobox-cat-' + e.target.dataset.row);
-		
 		var ul = elem.getElementsByTagName('ul');
 		if(ul.length>0) {
 			ul[0].setAttribute("data-selected", e.target.id);
 		}
-		
 		var spans = elem.getElementsByTagName('span');
 		if(spans.length > 0) {
 			spans[0].innerHTML = e.target.text;
 		}
 	},
 	
+	onYmlCategoryClick: function(e) {
+		var elem = document.getElementById('yml-cat-' + e.target.dataset.row);
+		var ul = elem.getElementsByTagName('ul');
+		if(ul.length>0) {
+			ul[0].setAttribute("data-selected", e.target.id);
+		}
+		var spans = elem.getElementsByTagName('span');
+		if(spans.length > 0) {
+			spans[0].innerHTML = e.target.text;
+		}
+	},
 	generateCategoriesView: function(childs, rowId) {
 		var result = [];
 		for(var i=0; i<childs.length; i++ ) {
@@ -79,6 +96,26 @@ module.exports = React.createClass({
 		return result;
 	},
 	
+	genYmlCategories: function(node, rowId) {
+		var result = [];
+		for(var key in node) {
+			var cat = node[key];
+			if(Object.keys(cat['child']).length === 0) {
+				result.push(
+					<MenuItem id={cat['id']} key={cat['id']} onClick={this.onYmlCategoryClick} data-row={rowId}>{cat['title']}</MenuItem>
+				);
+				return result;
+			}
+			
+			result.push(
+				<NavDropdown id={cat['id']} title={cat['title']} key={cat['id']} data-row={rowId} >
+					{this.genYmlCategories(cat['child'], rowId)}
+	    		</NavDropdown>
+			);
+		}
+		return result;
+	},
+	
 	
 	addRow: function() {
 		var id = this.state.rowId;
@@ -87,14 +124,19 @@ module.exports = React.createClass({
 		
 		
 		ReactDOM.render(
-			<YmlCategorySelect data={this.state.cats} />,
+			<Nav>
+				<NavDropdown id={'yml-nav-cat-' + id} title={'not selected'} data-selected='-1'>
+					<MenuItem id={-1} key='-1' onClick={this.onCategoryClick} data-row={id}>not selected</MenuItem>
+					{this.genYmlCategories(this.state.cats, id)}
+				</NavDropdown>
+			</Nav>,
 			document.getElementById('yml-cat-' + id)
 		);
 
 		
 		ReactDOM.render(
 			<Nav>
-				<NavDropdown id={'tobox-cat-' + id} title={'not selected'} data-selected='-1'>
+				<NavDropdown id={'tobox-nav-cat-' + id} title={'not selected'} data-selected='-1'>
 					<MenuItem id={-1} key='-1' onClick={this.onCategoryClick} data-row={id}>not selected</MenuItem>
 					{this.generateCategoriesView(window.categories, id)}
 				</NavDropdown>
@@ -109,10 +151,16 @@ module.exports = React.createClass({
 		
 		this.state.rowId += 1;
 	},
-	rowSelect: function(id, data) {
-		var elem = document.getElementById('row-cat-' + (id-1).toString());
-		var selects = elem.getElementsByTagName('select');
-		selects[0].value = data[0];
+	rowSelect: function(row, data) {
+		var elem = document.getElementById('yml-cat-' + (row-1).toString());
+		var ul = elem.getElementsByTagName('ul');
+		if(ul.length>0) {
+			ul[0].setAttribute("data-selected", data[0][0]);
+		}
+		var spans = elem.getElementsByTagName('span');
+		if(spans.length > 0) {
+			spans[0].innerHTML = data[0][1];
+		}
 	},
 	deleteRow: function(id) {
 		var elem = document.getElementById('row-cat-' + id);

@@ -21,8 +21,10 @@ module.exports = React.createClass({
 	displayName: 'YmlImporter',
 	getInitialState: function() {
 		return {
-		     file: "",
-			 data: []
+		    file: "",
+			data: [],
+			enableUpload: false,
+			errorNeedHide: true
 		};
 	},
 	
@@ -73,14 +75,46 @@ module.exports = React.createClass({
 	},
 	
 	uploadFile : function() {
+		var self = this;
+		if(this.state.file == '') {
+			this.viewError('Please select file', 'Warning');
+			if(this.state.errorNeedHide) {
+				setTimeout(function() {
+					self.setState({errorNeedHide:true});
+					self.hideError();
+				}, 4000);
+			}
+			this.setState({errorNeedHide:false});
+			return;
+		}
+		
+		if(!this.state.enableUpload) {
+			this.viewError('Please scan your file', 'Warning');
+			if(this.state.errorNeedHide) {
+				setTimeout(function() {
+					self.setState({errorNeedHide:true});
+					self.hideError();
+				}, 4000);
+			}
+			this.setState({errorNeedHide:false});
+			return;
+		}
+		
 		var relation_data = {};
+		var data_prods = {};
+		var war = '';
 		
 		var data_cats = {};
 		$('#table-cat > tr').each(function() {
-			var ul = this.getElementsByTagName('ul');
-			if(ul.length > 0) {
-				data_cats[ul[0].getAttribute("data-selected")] = ul[0].getAttribute("data-selected");
-				//data_cats.push({'yml':selects[0].value, 'tobox':selects[1].value});
+			var ul = this.querySelectorAll('ul.nav');
+			if(ul.length > 1) {
+				if(ul[1].getAttribute("data-selected")) {
+					data_cats[ul[0].getAttribute("data-selected")] = ul[1].getAttribute("data-selected");
+				} else {
+					if(war == '') {
+						war += 'Not all category relations are set. ';
+					}
+				}
 			}
 		});
 		
@@ -94,9 +128,12 @@ module.exports = React.createClass({
 				tmp['tobox'] = selects[1].value;
 			}
 			if(autoupdate.length > 0) {
-				tmp['autoupdate'] = autoupdate[0].value;
+				tmp['autoupdate'] = autoupdate[0].checked;
 			}
-			data_attrs.push(tmp);
+			if(tmp['tobox'] != '') {
+				data_prods[tmp['tobox']] = tmp['yml'];
+				data_attrs.push(tmp);
+			}
 		});
 		
 		var data_params = new Array();
@@ -109,31 +146,62 @@ module.exports = React.createClass({
 				tmp['tobox'] = selects[1].value;
 			}
 			if(autoupdate.length > 0) {
-				tmp['autoupdate'] = autoupdate[0].value;
+				tmp['autoupdate'] = autoupdate[0].checked;
 			}
-			data_params.push(tmp);
+			if(tmp['tobox'] != '') {
+				data_prods[tmp['tobox']] = tmp['yml'];
+				data_params.push(tmp);
+			}
 		});
 		
+		if(Object.keys(data_prods).length < Object.keys(window.products).length) {
+			war += 'Not all product relations are set';
+		}
+		
+		if(war != '') {
+			this.viewError(war, 'Warning');
+			if(this.state.errorNeedHide) {
+				setTimeout(function() {
+					self.setState({errorNeedHide:true});
+					self.hideError();
+				}, 4000);
+			}
+			this.setState({errorNeedHide:false});
+			return;
+		}
+		
 		relation_data['categories'] = data_cats;
+		relation_data['products'] = data_prods;
 		relation_data['attrs'] = data_attrs;
 		relation_data['params'] = data_params;
 		console.log(relation_data);
 		
-		
-		/*
 		var ajax_data = this.state.data;
+		var fname = this.state.file.name;
    		$.ajax({
 	    	type: 'post',
 	    	url: '/importer/api/tobox/relations/',
-	    	data: {user_id:'test', shop_id:'test', update_url:'url', relation_json:JSON.stringify(relation_data), autoupdate:true, data:JSON.stringify(ajax_data), file_type:'yml'},
+	    	data: {user_id:'test', shop_id:'test', update_url:'url', relation_json:JSON.stringify(relation_data), autoupdate:true, data:JSON.stringify(ajax_data), file_name:'zhop.yml', file_type:'yml'},
 	    	success: function(data){
 				console.log(data);
 	    	}.bind(this)
-   		});*/
+   		});
 	},
 	
 	parse: function() {
 		var file = this.state.file;
+		if(file == '') {
+			this.viewError('Please select file', 'Warning');
+			var self = this;
+			if(this.state.errorNeedHide) {
+				setTimeout(function() {
+					self.setState({errorNeedHide:true});
+					self.hideError();
+				}, 4000);
+			}
+			this.setState({errorNeedHide:false});
+			return;
+		}
 		var url = '/importer/api/parsers/yml/';
 		this.clearContent();
 		ReactDOM.render(<ProgressBar now={0} label="%(percent)s%" />, document.getElementById('progress-container'));
@@ -168,15 +236,38 @@ module.exports = React.createClass({
   			},
 	    	success: function(data){
 				this.setState({data: data['data']});
+				this.setState({enableUpload: true});
 	    		this.viewYml(data);
 				ReactDOM.render(<ProgressBar now={100} label="%(percent)s%" />, document.getElementById('progress-container'));
 	    	}.bind(this)
    		});
 	},
+	
+	viewError: function(message, title) {
+		ReactDOM.render(
+   			<Panel header={<h3>{title}</h3>} bsStyle="danger">
+      			<Row>
+					<Col xs={12}>
+						{message}
+					</Col>
+				</Row>
+    		</Panel>,
+			document.getElementById('yml-importer-problem')
+		);
+	},
+
+	hideError: function() {
+		ReactDOM.render(
+				<div></div>,
+				document.getElementById('yml-importer-problem')
+			);
+	},
+	
 
 	handleFile: function(event) {
 		this.setState({file: ''});
 		this.setState({data: []});
+		this.setState({enableUpload: false});
 		
     	var input = event.target;
 
@@ -222,7 +313,7 @@ module.exports = React.createClass({
 								</Col>
 								<Col xs={3}>
 									<div id='btn-upload'>
-										<ButtonInput  bsStyle="primary" value="Upload Products" onClick={this.uploadFile} />
+										<ButtonInput bsStyle="primary" value="Upload Products" onClick={this.uploadFile} />
 									</div>
 								</Col>
 								<Col xs={2}>
@@ -233,6 +324,8 @@ module.exports = React.createClass({
 								</Col>
 							</Row>
 						</Panel>
+						<div id="yml-importer-problem">
+						</div>
 						<div id="yml-importer-content" className="table-responsive">
 					   	</div>
 					</Col>
