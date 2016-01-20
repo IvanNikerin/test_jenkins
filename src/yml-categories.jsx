@@ -12,14 +12,13 @@ var Nav = require('react-bootstrap').Nav;
 var NavDropdown = require('react-bootstrap').NavDropdown;
 var MenuItem = require('react-bootstrap').MenuItem;
 
-var YmlCategorySelect = require('./yml-category-select');
-
 module.exports = React.createClass({
 	displayName: 'YmlCategories',
 	getInitialState: function() {
 		return {
-		     rowId: 0,
-			 cats: this.props.data
+		    rowId: 0,
+			cats: this.props.data,
+			rels: this.props.rels
 		};
 	},
 	
@@ -28,30 +27,68 @@ module.exports = React.createClass({
 		for(var key in node) {
 			var cat = node[key];
 			if(Object.keys(cat['child']).length === 0) {
-				this.addRow();
-				this.rowSelect(this.state.rowId, [[cat['id'],cat['title']], '']);
+				var self = this;
+				setTimeout(function() {
+					self.addRow();
+					self.rowSelect(self.state.rowId, [[cat['id'],cat['title']], '']);
+				}, 85);
 				return;
 			}
 			this.renderRow(cat['child']);
 		}
-		
-		
-		//if(i < len) {
-		//	this.addRow();
-		//	this.rowSelect(this.state.rowId, [cats[i]['cat_id'], '']);
-		//	var self = this;
-		//	setTimeout(function() {
-		//		i+=1;
-		//		self.renderRow(i)
-		//	},50)
-		//}
-		
 	},
 	
+	getPrevYmlData: function(node, id) {
+		var result = [];
+		for(var key in node) {
+			var cat = node[key];
+			if( cat['id'] == id) {
+				result[0] = cat['id'];
+				result[1] = cat['title'];
+				return result;
+			}
+			result = this.getPrevYmlData(cat['child'], id);
+			if(result.length > 0) {
+				return result;
+			}
+		}
+		return result;
+	},
+	
+	getPrevToboxData: function(node, id) {
+		var result = [];
+		for(var key in node) {
+			var cat = node[key];
+			if( cat['id'] == id) {
+				result[0] = cat['id'];
+				result[1] = cat['title'];
+				return result;
+			}
+			result = this.getPrevToboxData(cat['child'], id);
+			if(result.length > 0) {
+				return result;
+			}
+		}
+		return result;
+	},
+	
+	renderPrev: function(rels) {
+		var self = this;
+		for (var key in rels) {
+			self.addRow();
+			var yml_prev = self.getPrevYmlData(self.state.cats, key);
+			var tobox_prev = self.getPrevToboxData(window.categories, rels[key]);
+			self.rowSelect(self.state.rowId, [yml_prev, tobox_prev]);
+		}
+	},
 	
 	componentDidMount: function() {
 		var cats = this.state.cats;
-		this.renderRow(cats);
+		if(this.state.rels) {
+			this.renderPrev(this.state.rels);
+		} else {
+			this.renderRow(cats);
+		}
     },
 	
 	onCategoryClick: function(e) {
@@ -125,8 +162,8 @@ module.exports = React.createClass({
 		
 		ReactDOM.render(
 			<Nav>
-				<NavDropdown id={'yml-nav-cat-' + id} title={'not selected'} data-selected='-1'>
-					<MenuItem id={-1} key='-1' onClick={this.onCategoryClick} data-row={id}>not selected</MenuItem>
+				<NavDropdown id={'yml-nav-cat-' + id} title={window.messages['not_selected']} data-selected='-1'>
+					<MenuItem id={-1} key='-1' onClick={this.onYmlCategoryClick} data-row={id}>{window.messages['not_selected']}</MenuItem>
 					{this.genYmlCategories(this.state.cats, id)}
 				</NavDropdown>
 			</Nav>,
@@ -136,8 +173,8 @@ module.exports = React.createClass({
 		
 		ReactDOM.render(
 			<Nav>
-				<NavDropdown id={'tobox-nav-cat-' + id} title={'not selected'} data-selected='-1'>
-					<MenuItem id={-1} key='-1' onClick={this.onCategoryClick} data-row={id}>not selected</MenuItem>
+				<NavDropdown id={'tobox-nav-cat-' + id} title={window.messages['not_selected']} data-selected='-1'>
+					<MenuItem id={-1} key='-1' onClick={this.onCategoryClick} data-row={id}>{window.messages['not_selected']}</MenuItem>
 					{this.generateCategoriesView(window.categories, id)}
 				</NavDropdown>
 			</Nav>,
@@ -152,14 +189,21 @@ module.exports = React.createClass({
 		this.state.rowId += 1;
 	},
 	rowSelect: function(row, data) {
-		var elem = document.getElementById('yml-cat-' + (row-1).toString());
-		var ul = elem.getElementsByTagName('ul');
+		var elem = document.getElementById('row-cat-' + (row-1).toString());
+		var ul = elem.querySelectorAll('ul.nav');
 		if(ul.length>0) {
 			ul[0].setAttribute("data-selected", data[0][0]);
 		}
 		var spans = elem.getElementsByTagName('span');
 		if(spans.length > 0) {
 			spans[0].innerHTML = data[0][1];
+		}
+		if(data[1] != '') {
+			ul[1].setAttribute("data-selected", data[1][0]);
+			var spans = ul[1].getElementsByTagName('span');
+			if(spans.length > 0) {
+				spans[0].innerHTML = data[1][1];
+			}
 		}
 	},
 	deleteRow: function(id) {

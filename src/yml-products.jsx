@@ -23,20 +23,32 @@ module.exports = React.createClass({
 	},
 	componentDidMount: function() {
 		var attrs = this.state.prod_struct['attrs'];
-		var params = this.state.prod_struct['params']
-		
-		for (var i in attrs) {
-			this.addRow('prod-attr');
-			this.rowSelect(this.state.rowId, [attrs[i],''], 'prod-attr');
-		}
-		for (var j in params) {
-			this.addRow('prod-param');
-			this.rowSelect(this.state.rowId, [params[j],''], 'prod-param');
+		var params = this.state.prod_struct['params'];
+		if(!('rels' in this.state.prod_struct)) {
+			for (var i in attrs) {
+				this.addRow('prod-attr');
+				this.rowSelect(this.state.rowId, [attrs[i],'',false], 'prod-attr');
+			}
+			for (var j in params) {
+				this.addRow('prod-param');
+				this.rowSelect(this.state.rowId, [params[j],'',false], 'prod-param');
+			}
+		} else {
+			var attrs_rels = this.state.prod_struct['attrs-rels'];
+			var params_rels = this.state.prod_struct['params-rels'];
+			for (var i in attrs_rels) {
+				this.addRow('prod-attr');
+				this.rowSelect(this.state.rowId, [attrs_rels[i]['yml'],attrs_rels[i]['tobox'],attrs_rels[i]['autoupdate']], 'prod-attr');
+			}
+			for (var j in params_rels) {
+				this.addRow('prod-param');
+				this.rowSelect(this.state.rowId, [params_rels[j]['yml'],params_rels[j]['tobox'],params_rels[j]['autoupdate']], 'prod-param');
+			}
 		}
     },
 	addRow: function(tableName) {
 		var pid = this.state.rowId
-        var row = $('<tr id="row-'+ tableName + pid + '"><td id="yml-'+ tableName + pid + '"></td><td id="tobox-'+ tableName + pid + '"></td><td id="autoupdate-'+ tableName + pid +'" class="col-md-1"><input type="checkbox" value=""></td><td id="delete-button-'+ tableName + pid + '" class="col-md-1"></td></tr>');
+        var row = $('<tr id="row-'+ tableName + pid + '"><td id="yml-'+ tableName + pid + '"></td><td id="tobox-'+ tableName + pid + '"></td><td id="autoupdate-'+ tableName + pid +'" className="col-md-1"><input type="checkbox" value=""></td><td id="delete-button-'+ tableName + pid + '" className="col-md-1"></td></tr>');
         $("#" + tableName).append(row);
 		
 		ReactDOM.render(
@@ -59,7 +71,16 @@ module.exports = React.createClass({
 	rowSelect: function(id, data, tableName) {
 		var elem = document.getElementById('row-'+ tableName + (id-1).toString());
 		var selects = elem.getElementsByTagName('select');
-		selects[0].value = data[0];
+		if(selects.length > 1) {
+			selects[0].value = data[0];
+			if(data[1] != '') {
+				selects[1].value = data[1];
+			}
+		}
+		var inputs = elem.getElementsByTagName('input');
+		if(inputs.length > 0) {
+			inputs[0].checked = data[2];
+		}
 	},
 	deleteRow: function(pid, tableName) {
 		var elem = document.getElementById('row-'+ tableName + pid);
@@ -75,8 +96,8 @@ module.exports = React.createClass({
 					  <tr>
 						<th>Attribute name in YML</th>
 						<th>Product Attribute</th>
-						<th class="col-md-1">Autoupdate</th>
-						<th class="col-md-1"></th>
+						<th className="col-md-1">Autoupdate</th>
+						<th className="col-md-1"></th>
 					  </tr>
 					</thead>
 					<tbody id="prod-attr">
@@ -90,8 +111,8 @@ module.exports = React.createClass({
 					  <tr>
 						<th>Param name in YML</th>
 						<th>Product Attribute</th>
-						<th class="col-md-1">Autoupdate</th>
-						<th class="col-md-1"></th>
+						<th className="col-md-1">Autoupdate</th>
+						<th className="col-md-1"></th>
 					  </tr>
 					</thead>
 					<tbody id="prod-param">
