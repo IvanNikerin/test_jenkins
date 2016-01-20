@@ -265,7 +265,7 @@ module.exports = React.createClass({
 		
 		if(war != '') {
 			this.showWarning(war);
-			//return;
+			return;
 		}
 		
 		if(pics.length > 0) {
