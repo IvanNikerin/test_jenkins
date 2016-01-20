@@ -287,7 +287,7 @@ module.exports = React.createClass({
    		$.ajax({
 	    	type: 'post',
 	    	url: '/importer/api/tobox/relations/',
-	    	data: {user_id: usr, shop_id: shop, update_url: 'url', relation_json: JSON.stringify(relation_data), autoupdate: true, data: JSON.stringify(ajax_data), file_name: fname, file_type:'yml'},
+	    	data: {token: this.state.token, user_id: usr, shop_id: shop, update_url: 'url', relation_json: JSON.stringify(relation_data), autoupdate: true, data: JSON.stringify(ajax_data), file_name: fname, file_type:'yml'},
 	    	success: function(data){
 				console.log(data);
 	    	}.bind(this)
