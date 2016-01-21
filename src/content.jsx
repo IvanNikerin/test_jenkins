@@ -8,6 +8,7 @@ var Tab = require('react-bootstrap').Tab;
 
 var CsvXlsImporter = require('./csv-xls-importer');
 var YmlImporter = require('./yml-importer');
+var CategoriesRelations = require('./categories-relations');
 
 module.exports = React.createClass({displayName: 'Content',
     getInitialState: function() {
@@ -107,6 +108,9 @@ module.exports = React.createClass({displayName: 'Content',
     				<Tab eventKey={2} title="CSV XLS XLSX importer">
     					<CsvXlsImporter userId={this.state.userId} shopId={this.state.shopId} token={this.state.token}/>
     				</Tab>
+                    <Tab eventKey={3} title="Categories relations">
+                        <CategoriesRelations />
+                    </Tab>
     			</Tabs>
 			</div>
     	);

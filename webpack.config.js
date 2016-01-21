@@ -36,8 +36,8 @@ module.exports = {
         extensions: ['', '.js', '.jsx'],
     },
     plugins: [
-        new webpack.optimize.UglifyJsPlugin(),
-        new webpack.optimize.DedupePlugin(),
+        //new webpack.optimize.UglifyJsPlugin(),
+        //new webpack.optimize.DedupePlugin(),
         new ExtractTextPlugin('styles.css'),
     ]
 };

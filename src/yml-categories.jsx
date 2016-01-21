@@ -213,7 +213,7 @@ module.exports = React.createClass({
 	
 	render: function() {
 		return (
-		<Col xs={12}>
+		{/*<Col xs={12}>
 			<Panel header='Assign categories from YML'>
 				<Table striped bordered condensed hover>
 					<thead>
@@ -228,7 +228,7 @@ module.exports = React.createClass({
 				</Table>
 				<Button onClick={this.addRow}>Add</Button>
 			</Panel>
-		</Col>
+		</Col>*/}
 		);
 	}
 });
