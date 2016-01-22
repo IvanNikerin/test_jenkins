@@ -2,6 +2,7 @@ var $ = require('jquery');
 require('jquery.cookie');
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 
 var Tabs = require('react-bootstrap').Tabs;
 var Tab = require('react-bootstrap').Tab;
@@ -31,12 +32,24 @@ module.exports = React.createClass({displayName: 'Content',
                 'Content-Type': 'application/json'
             },
             success: function(data){
-                if (this.isMounted()) {
-                    this.setState({
-                        shopId: data["shopIds"][0],
-                        userId: data["userId"]
-                    });
-                }
+                this.setState({
+                    shopId: data["shopIds"][0],
+                    userId: data["userId"]
+                });
+                ReactDOM.render(
+                    <Tabs defaultActiveKey={1}>
+                        <Tab eventKey={1} title="Categories relations">
+                            <CategoriesRelations userId={this.state.userId}/>
+                        </Tab>
+                        <Tab eventKey={2} title="YML importer">
+                            <YmlImporter shopId={this.state.shopId} />
+                        </Tab>
+                        <Tab eventKey={3} title="CSV XLS XLSX importer">
+                            <CsvXlsImporter userId={this.state.userId} shopId={this.state.shopId} token={this.state.token}/>
+                        </Tab>
+                    </Tabs>,
+                    document.getElementById('main')
+                );
             }.bind(this)
         });        
     },
@@ -60,11 +73,6 @@ module.exports = React.createClass({displayName: 'Content',
         });
     },
 
-    processTobox: function() {
-        this.getProfile();
-        this.getCategories();
-    },
-
     login: function() {
         $.ajax({
             type: "post",
@@ -85,6 +93,8 @@ module.exports = React.createClass({displayName: 'Content',
 
                     this.processTobox();
                 }*/
+
+                this.getProfile();
                 this.getCategories();
             }.bind(this),
             error: function (xhr, ajaxOptions, thrownError) {
@@ -100,18 +110,7 @@ module.exports = React.createClass({displayName: 'Content',
 
 	render: function() {
     	return (
-    		<div>
-    			<Tabs defaultActiveKey={1}>
-					<Tab eventKey={1} title="YML importer">
-						<YmlImporter shopId={this.state.shopId} />
-					</Tab>
-    				<Tab eventKey={2} title="CSV XLS XLSX importer">
-    					<CsvXlsImporter userId={this.state.userId} shopId={this.state.shopId} token={this.state.token}/>
-    				</Tab>
-                    <Tab eventKey={3} title="Categories relations">
-                        <CategoriesRelations />
-                    </Tab>
-    			</Tabs>
+    		<div id="main">
 			</div>
     	);
   	}

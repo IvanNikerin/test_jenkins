@@ -13,6 +13,7 @@ var Nav = require('react-bootstrap').Nav;
 var NavDropdown = require('react-bootstrap').NavDropdown;
 var MenuItem = require('react-bootstrap').MenuItem;
 var Input = require('react-bootstrap').Input;
+var Well = require('react-bootstrap').Well;
 
 module.exports = React.createClass({
 	displayName: 'CategoriesRelations',
@@ -20,49 +21,105 @@ module.exports = React.createClass({
 	getInitialState: function() {
 		return {
 			'rowId': 0,
-			'toboxCategories': []
+			'toboxCategories': [],
+			'categoriesRelations': {},
+			'userId': this.props.userId,
+			'errorNeedHide': true,
 		};
 	},
 
-    getCategories: function() {
+	viewError: function(msg) {
+		ReactDOM.render(
+   			<Panel header={<h3>Configure data</h3>} bsStyle="danger">
+      			<Row>
+					<Col xs={12}>
+						{msg}
+					</Col>
+				</Row>
+    		</Panel>,
+			document.getElementById('categories-relations-problem')
+		);
+	},
+
+	showError : function(msg) {
+		var self = this;
+		this.viewError(msg, 'Warning');
+		if(this.state.errorNeedHide) {
+			setTimeout(function() {
+				self.setState({errorNeedHide:true});
+				self.hideError();
+			}, 5000);
+		}
+		this.setState({errorNeedHide:false});
+	},
+
+	hideError: function() {
+		ReactDOM.render(
+			<div></div>,
+			document.getElementById('categories-relations-problem')
+		);
+	},
+
+	getCategories: function(toboxCategories) {
+		$.ajax({
+            type: "get",
+            url: '/importer/api/tobox/relations/category/',
+            contentType: 'application/json',
+            dataType: 'json',
+            data: {user_id: this.state.userId},
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            success: function(data){
+            	this.setState({
+                	'toboxCategories': toboxCategories,
+                	'categoriesRelations': JSON.parse(data['relation_json'])
+                });
+
+                this.renderRows();
+            }.bind(this),
+            error: function (xhr, ajaxOptions, thrownError) {
+            	this.showError(xhr.status + ', ' + thrownError);
+            }.bind(this)
+        });		
+	},
+
+    getToboxCategories: function() {
         $.ajax({
             type: "get",
-            url: '/tobox/api/beta/categories',
+            url: '/tobox/api/beta/categories/',
             contentType: 'application/json',
             dataType: 'json',
             headers: {
                 'Content-Type': 'application/json'
             },
             success: function(data){
-            	this.setState({
-                	'toboxCategories': data
-                });
+            	this.getCategories(data);
             }.bind(this),
             error: function (xhr, ajaxOptions, thrownError) {
-                alert(xhr.status);
-                alert(thrownError);
-            }
+                this.showError(xhr.status + ', ' + thrownError);
+            }.bind(this)
         });
     },
 
 	componentDidMount: function() {
-		this.getCategories();
+		this.getToboxCategories();
     },
 
     addRow: function() {
     	var id = this.state.rowId;
-        var row = $('<tr id="row-cat-' + id + '"><td id="yml-cat-' + id + '"></td><td id="tobox-cat-' + id + '"></td><td id="delete-button-' + id + '"></td></tr>');
+        var row = $('<tr id="row-cat-' + id + '"><td class="table-text-col" id="yml-cat-' + id + '"></td><td class="table-nav-col" id="tobox-cat-' + id + '"></td><td class="text-center table-delete-col" id="delete-button-' + id + '"></td></tr>');
         $("#table-cat").append(row);
 		
 		
 		ReactDOM.render(
-			<Input type="text"/>,
+			<Input className="table-element" type="text"/>,
 			document.getElementById('yml-cat-' + id)
 		);
 
 		
 		ReactDOM.render(
-			<Nav>
+			<Nav className="table-nav-element">
 				<NavDropdown id={'tobox-nav-cat-' + id} title={window.messages['not_selected']} data-selected='-1'>
 					<MenuItem id={-1} key='-1' onClick={this.onCategoryClick} data-row={id}>{window.messages['not_selected']}</MenuItem>
 					{this.generateCategoriesView(this.state.toboxCategories, id)}
@@ -72,7 +129,7 @@ module.exports = React.createClass({
 		);
 		
 		ReactDOM.render(
-			<Button onClick={this.deleteRow.bind(this, id)}>Delete</Button>,
+			<Button className="table-element" bsStyle="danger" onClick={this.deleteRow.bind(this, id)}>Delete</Button>,
 			document.getElementById('delete-button-' + id)
 		);
 		
@@ -82,6 +139,55 @@ module.exports = React.createClass({
     deleteRow: function(id) {
 		var elem = document.getElementById('row-cat-' + id);
 		elem.parentNode.removeChild(elem);
+	},
+
+	rowSelect: function(row, data) {
+		var elem = document.getElementById('row-cat-' + (row-1).toString());
+		var ul = elem.querySelectorAll('ul.nav');
+		var input = elem.querySelectorAll('.table-element');
+		if(input.length > 0)
+		{
+			input[0].value = data[0];
+		}
+		
+		ul[0].setAttribute("data-selected", data[1][0]);
+		var spans = ul[0].getElementsByTagName('span');
+		if(spans.length > 0) {
+			spans[0].innerHTML = data[1][1];
+		}
+	},
+
+	getPrevToboxData: function(node, id) {
+		var result = [];
+		for(var key in node) {
+			var cat = node[key];
+			if( cat['id'] == id) {
+				result[0] = cat['id'];
+				result[1] = cat['title'];
+				return result;
+			}
+			result = this.getPrevToboxData(cat['child'], id);
+			if(result.length > 0) {
+				return result;
+			}
+		}
+		return result;
+	},
+
+	renderRows: function() {
+		var rows = this.state.categoriesRelations;
+		if (Object.keys(rows).length > 0) {
+			$.each(rows, function(key, value) {
+				setTimeout(function() {
+					this.addRow();
+					var tobox_data = this.getPrevToboxData(this.state.toboxCategories, value);
+					this.rowSelect(this.state.rowId, [key, tobox_data]);
+				}.bind(this), 85);
+			}.bind(this));
+		}
+		else {
+			this.addRow();
+		}
 	},
 
 	onCategoryClick: function(e) {
@@ -96,8 +202,45 @@ module.exports = React.createClass({
 		}
 	},
 
+	generateCategoriesView: function(sheet, childs) {
+		var result = [];
+
+		childs.map(function(child) {
+			if(child['child'].length == 0) {
+				result.push(
+					<MenuItem id={sheet + '_' + child['id']} key={child['id']} onClick={this.onCategoriesClick}>{child['title']}</MenuItem>
+				);
+				return result;
+			}
+
+			result.push(
+				<NavDropdown id={sheet + '_' + child['id']} title={child['title']} key={child['id']}>
+					{this.generateCategoriesView(sheet, child['child'])}
+	    		</NavDropdown>
+			);
+		}.bind(this));
+
+		return result;
+	},
+
 	generateCategoriesView: function(childs, rowId) {
 		var result = [];
+
+		childs.map(function(child) {
+			if(child['child'].length == 0) {
+				result.push(
+					<MenuItem id={child['id']} key={child['id']} onClick={this.onCategoryClick} data-row={rowId}>{child['title']}</MenuItem>
+				);
+				return result;
+			}
+
+			result.push(
+				<NavDropdown id={child['id']} title={child['title']} key={child['id']} data-row={rowId} >
+					{this.generateCategoriesView(child['child'], rowId)}
+	    		</NavDropdown>
+			);
+		}.bind(this));
+		/*var result = [];
 		for(var i=0; i<childs.length; i++ ) {
 			var child = childs[i];
 			if(child['child'].length == 0) {
@@ -111,39 +254,91 @@ module.exports = React.createClass({
 					{this.generateCategoriesView(child['child'], rowId)}
 	    		</NavDropdown>
 			);
-		}
+		}*/
 		return result;
+	},
+
+	update: function() {
+		var relations = {};
+
+		$('#table-cat > tr').each(function() {
+			var user_cat = '';
+			var input = this.querySelectorAll('.table-element');
+			if(input.length > 0) {
+				var user_cat = input[0].value;
+			}
+
+			var ul = this.querySelectorAll('ul.nav');
+			if(ul.length > 0) {
+				var tobox_cat = ul[0].getAttribute("data-selected");
+				if (user_cat != '' && tobox_cat && tobox_cat != -1) {
+					relations[user_cat] = tobox_cat;
+				}
+			}
+		});
+
+		$.ajax({
+            type: 'post',
+            url: '/importer/api/tobox/relations/category/',
+            data: {
+            	user_id: this.state.userId, relation_json: JSON.stringify(relations)
+            },
+            success: function(data){
+                /*ReactDOM.render(
+                	<tr></tr>,
+                	document.getElementById('table-cat')
+                );*/
+
+				$("#table-cat").empty();
+
+                this.setState({
+                	'categoriesRelations': JSON.parse(data['relation_json'])
+                });
+
+                this.renderRows();
+            }.bind(this),
+            error: function (xhr, ajaxOptions, thrownError) {
+                this.showError(xhr.status + ', ' + thrownError);
+            }.bind(this)
+        });
 	},
 
     render: function() {
     	var table = '';
     	if(this.state.toboxCategories.length != 0) {
     		table = <div>
+    					<Row>
+    						<Col xs={4} xsOffset={4}>
+    							<Button bsSize="large" block className="update-button" onClick={this.update} bsStyle="primary">Update</Button>
+    						</Col>
+    					</Row>
 	    				<Table striped bordered condensed hover>
 							<thead>
 								<tr>
-									<th>User categories</th>
-									<th>Tobox categories</th>
-									<th></th>
+									<th className="table-text-col">User categories</th>
+									<th className="table-nav-col">Tobox categories</th>
+									<th className="table-delete-col"></th>
 								</tr>
 							</thead>
 							<tbody id="table-cat">
 							</tbody>
 						</Table>
-						<Button onClick={this.addRow}>Add</Button>
+						<Button bsStyle="success" className="pull-right add-button" onClick={this.addRow} pull-right>Add</Button>
 					</div>;
     	}
 
     	return (
-    		<Jumbotron>
+    		
 				<Row>
 		    		<Col xs={10} xsOffset={1}>
-						<Panel header='Assign categories to tobox' bsStyle="primary">
+		    			<div id="categories-relations-problem">
+						</div>
+						<Panel className="margin-panel" header='Assign categories to tobox' bsStyle="primary">
 							{table}
 						</Panel>
 					</Col>
 				</Row>
-			</Jumbotron>
+			
     	);
     }
 })

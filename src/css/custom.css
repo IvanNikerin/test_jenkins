@@ -1,0 +1,31 @@
+.update-button {
+	margin-bottom: 15px;
+}
+
+.add-button {
+	width: 100px;
+}
+
+.table-element {
+	margin-top: 15px;
+}
+
+.table-nav-element {
+	margin-top: 17px;
+}
+
+.table-delete-col {
+	width: 100px;
+}
+
+.table-text-col {
+	width: 350px;
+}
+
+.table-nav-col {
+	min-width: 200px;
+}
+
+.margin-panel {
+	margin-top: 50px;
+}
