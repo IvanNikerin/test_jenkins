@@ -12,7 +12,7 @@ module.exports = React.createClass({
 			rows.push(<option key={id} value={vals[id]}>{vals[id]}</option>);
 		}
 		return (
-			<Input type="select" placeholder={window.messages['not_selected']}>
+			<Input className="table-element" type="select" placeholder={window.messages['not_selected']}>
 				 <option value="-1">{window.messages['not_selected']}</option>
 				{rows}
 			</Input>

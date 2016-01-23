@@ -14,7 +14,6 @@ var Jumbotron = require('react-bootstrap').Jumbotron;
 var Input = require('react-bootstrap').Input;
 var ProgressBar = require('react-bootstrap').ProgressBar;
 
-var YmlCategories = require('./yml-categories');
 var YmlProducts = require('./yml-products');
 
 module.exports = React.createClass({
@@ -47,6 +46,7 @@ module.exports = React.createClass({
 			'shopId': '',
 		    file: "",
 			data: [],
+			ymlCats: {},
 			enableUpload: false,
 			errorNeedHide: true,
 			'token': $.cookie('toboxkey'),
@@ -82,17 +82,13 @@ module.exports = React.createClass({
 						new_data['prod_struct']['attrs-rels'] = relation_json['attrs'];
 						new_data['prod_struct']['params-rels'] = relation_json['params'];
 					}
-
-					new_data['categories'] = data['categories'];
-					if(Object.keys(relation_json['categories']).length > 0) {
-						new_data['cat-rels'] = relation_json['categories'];
-					}
 					
 					this.viewYml(new_data);
 				} else {
 					this.viewYml(data);
 				}
 				this.setState({data: data['data']});
+				this.setState({ymlCats: data['categories']});
 				this.setState({enableUpload: true});
 				ReactDOM.render(<ProgressBar now={100} label="%(percent)s%" />, document.getElementById('progress-container'));
 				setTimeout(function() {
@@ -125,22 +121,11 @@ module.exports = React.createClass({
 	viewYml: function(data) {
 		if (data) {
 			ReactDOM.render(
-				<Tabs defaultActiveKey={1}>
-					<Tab eventKey={1} title="Categories">
-						<Panel header={<h3>Configure data</h3>} bsStyle="success">
-							<Row>
-								<YmlCategories data={data['categories']} rels={data['cat-rels']} />		
-							</Row>
-						</Panel>
-					</Tab>
-					<Tab eventKey={2} title="Products">
-						<Panel header={<h3>Configure data</h3>} bsStyle="success">
-							<Row>
-								<YmlProducts data={data['prod_struct']} />		
-							</Row>
-						</Panel>
-					</Tab>
-				</Tabs>,
+				<Panel header={<h3>Configure data</h3>} bsStyle="success">
+					<Row>
+						<YmlProducts data={data['prod_struct']} />		
+					</Row>
+				</Panel>,
 				document.getElementById('yml-importer-content')				
 			);
 		} else { 
@@ -192,22 +177,16 @@ module.exports = React.createClass({
 		var data_prods = {};
 		var pics = new Array();
 		var war = '';
-		
 		var data_cats = {};
-		$('#table-cat > tr').each(function() {
-			var ul = this.querySelectorAll('ul.nav');
-			if(ul.length > 1) {
-				var yml_cat = ul[0].getAttribute("data-selected");
-				var tobox_cat = ul[1].getAttribute("data-selected");
-				if(yml_cat && yml_cat != '-1') {
-					data_cats[yml_cat] = tobox_cat;
-				} else {
-					if(war == '') {
-						war += 'Not all category relations are set. ';
-					}
+
+		for(var key in window.categories) {
+			for(var catname in this.state.ymlCats) {
+				if(key == catname) {
+					data_cats[this.state.ymlCats[catname]['id']] = window.categories[key];
+					continue;
 				}
 			}
-		});
+		}
 		
 		var data_attrs = new Array();
 		$('#prod-attr > tr').each(function() {
@@ -253,6 +232,10 @@ module.exports = React.createClass({
 			}
 		});
 		
+		if(pics.length > 0) {
+			data_prods[window.tobox_pictures] = pics;
+		}
+		
 		var req_count = 0;
 		for(var i in window.required ) {
 			if(window.required[i] in data_prods) {
@@ -268,15 +251,10 @@ module.exports = React.createClass({
 			//return;
 		}
 		
-		if(pics.length > 0) {
-			data_prods[window.tobox_pictures] = pics;
-		}
-		
 		relation_data['categories'] = data_cats;
 		relation_data['products'] = data_prods;
 		relation_data['attrs'] = data_attrs;
 		relation_data['params'] = data_params;
-		//console.log(relation_data);
 		
 		var ajax_data = this.state.data;
 		var fname = this.state.file.name;

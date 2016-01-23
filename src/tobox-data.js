@@ -1,4 +1,4 @@
-window.categories = [];
+window.categories = {};
 window.tobox_uuid = {'name': 'Tobox UUID (for update)', 'value': 'id'};
 window.tobox_pictures = 'pictures';
 window.products = {'Картинка': 'pictures', 'Заголовок': 'title', 'Описание': 'description', 'Видимость': 'hidden', 'Цена': 'price'};

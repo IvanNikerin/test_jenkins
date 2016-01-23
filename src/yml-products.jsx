@@ -48,7 +48,7 @@ module.exports = React.createClass({
     },
 	addRow: function(tableName) {
 		var pid = this.state.rowId
-        var row = $('<tr id="row-'+ tableName + pid + '"><td id="yml-'+ tableName + pid + '"></td><td id="tobox-'+ tableName + pid + '"></td><td id="autoupdate-'+ tableName + pid +'" className="col-md-1"><input type="checkbox" value=""></td><td id="delete-button-'+ tableName + pid + '" className="col-md-1"></td></tr>');
+        var row = $('<tr id="row-'+ tableName + pid + '"><td class="col-xs-4" id="yml-'+ tableName + pid + '"></td><td id="tobox-'+ tableName + pid + '"></td><td class="text-center" id="autoupdate-'+ tableName + pid +'"><input class="table-checkbox" type="checkbox" value=""></td><td id="delete-button-'+ tableName + pid + '" class="table-delete-col text-center"></td></tr>');
         $("#" + tableName).append(row);
 		
 		ReactDOM.render(
@@ -62,7 +62,7 @@ module.exports = React.createClass({
 		);
 		
 		ReactDOM.render(
-			<Button onClick={this.deleteRow.bind(this, pid, tableName)}>Delete</Button>,
+			<Button className="table-element" bsStyle="danger" onClick={this.deleteRow.bind(this, pid, tableName)}>Delete</Button>,
 			document.getElementById('delete-button-'+ tableName + pid)
 		);
 		
@@ -94,31 +94,31 @@ module.exports = React.createClass({
 				<Table striped bordered condensed hover>
 					<thead>
 					  <tr>
-						<th>Attribute name in YML</th>
+						<th className="col-xs-4">Attribute name in YML</th>
 						<th>Product Attribute</th>
-						<th className="col-md-1">Autoupdate</th>
-						<th className="col-md-1"></th>
+						<th className="col-xs-1">Autoupdate</th>
+						<th className="table-delete-col"></th>
 					  </tr>
 					</thead>
 					<tbody id="prod-attr">
 					</tbody>
 				</Table>
-				<Button onClick={this.addRow.bind(this, 'prod-attr')} className='uberbrn'>Add</Button>
+				<Button className="pull-right add-button" bsStyle="success" onClick={this.addRow.bind(this, 'prod-attr')} >Add</Button>
 			</Panel>
 			<Panel header='Assign product params from YML'>
 				<Table striped bordered condensed hover>
 					<thead>
 					  <tr>
-						<th>Param name in YML</th>
+						<th className="col-xs-4">Param name in YML</th>
 						<th>Product Attribute</th>
-						<th className="col-md-1">Autoupdate</th>
-						<th className="col-md-1"></th>
+						<th className="col-xs-1">Autoupdate</th>
+						<th className="table-delete-col"></th>
 					  </tr>
 					</thead>
 					<tbody id="prod-param">
 					</tbody>
 				</Table>
-				<Button onClick={this.addRow.bind(this, 'prod-param')}>Add</Button>
+				<Button className="pull-right add-button" bsStyle="success" onClick={this.addRow.bind(this, 'prod-param')} >Add</Button>
 			</Panel>
 		</Col>
 		);
