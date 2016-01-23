@@ -359,10 +359,9 @@ module.exports = React.createClass({
 
 	render: function() {
 		return (
-			<Jumbotron>
 				<Row>
 					<Col xs={10} xsOffset={1}>
-						<Panel header={<h3>Settings</h3>} bsStyle="primary">
+						<Panel className="margin-panel" header={<h3>Settings</h3>} bsStyle="primary">
 							<Row>
 								<Col xs={12}>
 									<Panel header={<h3>Select file</h3>}>
@@ -403,7 +402,6 @@ module.exports = React.createClass({
 					   	</div>
 					</Col>
 				</Row>
-			</Jumbotron>
 		);
 	}
 });
