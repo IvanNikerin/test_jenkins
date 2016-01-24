@@ -68,10 +68,13 @@ module.exports = React.createClass({
 	    	},
 	    	success: function(result){
 				var exists = false;
+				var relation_json = {};
 	    		if(!('error' in result)) {
-		    		var relation_json = JSON.parse(result['relation_json']);
-		    		if(result['file_name'] == filename) {
-						exists = true;
+	    			if('relation_json' in result) {
+	    				relation_json = JSON.parse(result['relation_json']);
+			    		if(result['file_name'] == filename) {
+							exists = true;
+			    		}
 		    		}
 	    		}
 				if(exists) {
@@ -265,7 +268,7 @@ module.exports = React.createClass({
    		$.ajax({
 	    	type: 'post',
 	    	url: '/importer/api/tobox/relations/',
-	    	data: {token: this.state.token, user_id: usr, shop_id: shop, update_url: 'url', relation_json: JSON.stringify(relation_data), autoupdate: true, data: JSON.stringify(ajax_data), file_name: fname, file_type:'yml'},
+	    	data: {token: this.state.token, user_id: usr, shop_id: shop, update_url: autoupdate_url, relation_json: JSON.stringify(relation_data), autoupdate: auto, data: JSON.stringify(ajax_data), file_name: fname, file_type:'yml'},
 	    	success: function(data){
 				console.log(data);
 	    	}.bind(this)
