@@ -22,7 +22,7 @@ var GridViewer = require('./grid-viewer');
 module.exports = React.createClass({
 	displayName: 'CsvXlsImporter',
 
-	getProfile: function() {
+	/*getProfile: function() {
         $.ajax({
             type: "post",
             url: '/tobox/api/beta/profile',
@@ -41,11 +41,11 @@ module.exports = React.createClass({
                 }
             }.bind(this)
         });        
-    },
+    },*/
 
 	getInitialState: function() {
 		return {
-			'categories_relations': {},
+			/*'categories_relations': {},
 			'products_relations': {},
 			'data': {sheets: []},
 			'has_data': false,
@@ -53,30 +53,40 @@ module.exports = React.createClass({
 			'shopId': '',
 			'fileName': '',
 			'token': $.cookie('toboxkey'),
-			'tokens': $.cookie('toboxskey')
+			'tokens': $.cookie('toboxskey'),*/
+
+			'toboxCategories': [],
+			'globalCategory': {id: -1, title: 'not selected'},
+			'productsRelations': {},
+			'userId': this.props.userId,
+			'shopId': this.props.shopId,
+			'hasData': false,
+			'data': {sheets: []},
+			'errorNeedHide': true,
+			'token': $.cookie('toboxkey'),
+			'fileName': ''
+
 		};
 	},
 
 	componentDidMount: function() {
-		this.getProfile();
+		this.getToboxCategories();
 	},
 
-	onCategoriesRelationSet: function(sheet, tobox) {
+	/*onCategoriesRelationSet: function(sheet, tobox) {
 		var categories_relations = this.state.categories_relations;
 		categories_relations[sheet] = tobox;
 		this.setState({
 			'categories_relations': categories_relations
 		});
-	},
+	},*/
 
 	setDefaultRelations: function(data) {
-		var categories_relations = {};
 		var products_relations = {};
 		
 		$.each(Object.keys(data['sheets']), function() {
 			var sheet = this;
 
-			categories_relations[sheet] = {title: 'not selected', id: -1};
 			products_relations[sheet] = {};
 			
 			$.each(data['sheets'][sheet]['header'], function(){
@@ -85,8 +95,8 @@ module.exports = React.createClass({
 		});
 
 		this.setState({
-			'categories_relations': categories_relations,
-			'products_relations': products_relations
+			'productsRelations': products_relations,
+			'globalCategory': {id: -1, title: 'not selected'}
 		});
 	},
 
@@ -107,18 +117,15 @@ module.exports = React.createClass({
 			text = e.target.innerText;
 		}
 
-		var data = id.split('_');
-
-		var sheet = data[0];
-		var toboxId = data[1];
-
-		this.onCategoriesRelationSet(sheet, {title: text, id: toboxId});
+		this.setState({
+			'globalCategory': {id: id, title: text}
+		});
 	},
 
-	generateCategoriesView: function(sheet, childs) {
-		var result = [];
+	//generateCategoriesView: function(sheet, childs) {
+	//	var result = [];
 
-		childs.map(function(child) {
+		/*childs.map(function(child) {
 			if(child['child'].length == 0) {
 				result.push(
 					<MenuItem id={sheet + '_' + child['id']} key={child['id']} onClick={this.onCategoriesClick}>{child['title']}</MenuItem>
@@ -131,12 +138,12 @@ module.exports = React.createClass({
 					{this.generateCategoriesView(sheet, child['child'])}
 	    		</NavDropdown>
 			);
-		}.bind(this));
+		}.bind(this));*/
 
-		return result;
-	},
+	//	return result;
+	//},
 
-	viewError: function(message, id, title) {
+	/*viewError: function(message, id, title) {
 		ReactDOM.render(
    			<Panel header={<h3>{title}</h3>} bsStyle="danger">
       			<Row>
@@ -154,7 +161,7 @@ module.exports = React.createClass({
 				<div></div>,
 				document.getElementById(id)
 			);
-	},
+	},*/
 
 	getRelations: function(data, filename) {
 		$.ajax({
@@ -165,36 +172,35 @@ module.exports = React.createClass({
 	    		file_name: filename
 	    	},
 	    	success: function(result){
-	    		if(!('error' in result)) {
+	    		if('relation_json' in result) {
 		    		var relation_json = JSON.parse(result['relation_json']);
+		    		var global_category = this.state.globalCategory;
 
 		    		if(result['file_name'] == filename) {
-		    			Object.keys(relation_json['categories']).map(function(sheet) {
-		    				if (sheet in data['sheets']) {
-		    					var categories_relations = this.state.categories_relations;
-		    					categories_relations[sheet] = relation_json['categories'][sheet];
-		    					this.setState({
-		    						'categories_relations': categories_relations
-		    					});
-		    				}
-		    			}.bind(this));
+		    			if ('global_category' in relation_json) {
+		    				global_category = relation_json['global_category'];
+		    			}
 
 		    			Object.keys(relation_json['products']['sheets']).map(function(sheet) {
 		    				if(sheet in data['sheets']) {
 		    					Object.keys(relation_json['products']['sheets'][sheet]).map(function(header) {
 		    						if(data['sheets'][sheet]['header'].indexOf(header) != -1) {
-		    							var products_relations = this.state.products_relations;
+		    							var products_relations = this.state.productsRelations;
 		    							
 		    							products_relations[sheet][header] = relation_json['products']['sheets'][sheet][header];
 		    							
 		    							this.setState({
-		    								'products_relations': products_relations
+		    								'productsRelations': products_relations,
+		    								'globalCategory': global_category
 		    							});
 		    						}
 		    					}.bind(this));
 		    				}
 		    			}.bind(this));
 		    		}
+	    		}
+	    		else {
+	    			this.setDefaultRelations(data);
 	    		}
 	    	}.bind(this)
    		});
@@ -243,7 +249,7 @@ module.exports = React.createClass({
 
 	    		this.setState({
 	    			'data': data,
-	    			'has_data': true,
+	    			'hasData': true,
 	    			'fileName': file.name
 	    		});
 	    	}.bind(this)
@@ -296,11 +302,11 @@ module.exports = React.createClass({
 	},
 
 	prepareUpdate: function() {
-		var categories_relations = this.state.categories_relations;
-		var products_relations = this.state.products_relations;
+		var global_category = this.state.globalCategory;
+		var products_relations = this.state.productsRelations;
 
 		var relation_json = {
-			categories:{}, products:{'sheets':{}}
+			global_category:global_category, products:{'sheets':{}}
 		};
 
 		var needed_keys = {};
@@ -310,27 +316,20 @@ module.exports = React.createClass({
 		});
 
 		Object.keys(this.state.data['sheets']).map(function(sheet) {
-			if(categories_relations[sheet]['id'] != -1) {
-				relation_json['categories'][sheet] = {
-					title: categories_relations[sheet]['title'],
-					id: categories_relations[sheet]['id']
-				};
+			relation_json['products']['sheets'][sheet] = {};
 
-				relation_json['products']['sheets'][sheet] = {};
-
-				this.state.data['sheets'][sheet]['header'].map(function(header) {
-					if(products_relations[sheet][header]['id'] != -1) {
-						var index = needed_keys[sheet].indexOf(products_relations[sheet][header]['title'].replace(/\s/g, ''));
-						if(index != -1)
-							needed_keys[sheet].splice(index, 1);
-						relation_json['products']['sheets'][sheet][header] = {
-							title: products_relations[sheet][header]['title'],
-							id: products_relations[sheet][header]['id'],
-							is_primary: products_relations[sheet][header]['is_primary']
-						};
-					}
-				}.bind(this));
-			}
+			this.state.data['sheets'][sheet]['header'].map(function(header) {
+				if(products_relations[sheet][header]['id'] != -1) {
+					var index = needed_keys[sheet].indexOf(products_relations[sheet][header]['title'].replace(/\s/g, ''));
+					if(index != -1)
+						needed_keys[sheet].splice(index, 1);
+					relation_json['products']['sheets'][sheet][header] = {
+						title: products_relations[sheet][header]['title'],
+						id: products_relations[sheet][header]['id'],
+						is_primary: products_relations[sheet][header]['is_primary']
+					};
+				}
+			}.bind(this));
 		}.bind(this));
 
 		error = "";
@@ -340,15 +339,12 @@ module.exports = React.createClass({
 		Object.keys(this.state.data['sheets']).map(function(sheet) {
 			if(needed_keys[sheet].length != 0) {
 				error_count ++;
-				error = error + '! Check that category selected and required relations: ' + JSON.stringify(needed_keys[sheet]) + ' for sheet: ' + sheet;
+				error = error + '! Check required relations: ' + JSON.stringify(needed_keys[sheet]) + ' for sheet: ' + sheet;
 			}
 		});
 		if(error != "") {
 			error = error.slice(2);
-			this.viewError(error, 'csv-xls-importer-problem', 'Warning');
-			setTimeout(function() {
-				this.hideError('csv-xls-importer-problem');
-			}.bind(this), 7000);
+			this.showError(error);
 		}
 		
 		if(error_count < Object.keys(this.state.data['sheets']).length)
@@ -357,40 +353,113 @@ module.exports = React.createClass({
 		}
 	},
 
+	viewError: function(msg) {
+		ReactDOM.render(
+   			<Panel header={<h3>Configure data</h3>} bsStyle="danger">
+      			<Row>
+					<Col xs={12}>
+						{msg}
+					</Col>
+				</Row>
+    		</Panel>,
+			document.getElementById('csv-xls-importer-problem')
+		);
+	},
+
+	showError : function(msg) {
+		var self = this;
+		this.viewError(msg);
+		console.log(this.state.errorNeedHide);
+		if(this.state.errorNeedHide) {
+			setTimeout(function() {
+				this.setState({errorNeedHide:true});
+				this.hideError();
+			}.bind(this), 5000);
+		}
+		this.setState({errorNeedHide:false});
+	},
+
+	hideError: function() {
+		ReactDOM.render(
+			<div></div>,
+			document.getElementById('csv-xls-importer-problem')
+		);
+	},
+
+	getToboxCategories: function() {
+        $.ajax({
+            type: "get",
+            url: '/tobox/api/beta/categories/',
+            contentType: 'application/json',
+            dataType: 'json',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            success: function(data){
+            	this.setState({
+            		'toboxCategories': data
+            	});
+            }.bind(this),
+            error: function (xhr, ajaxOptions, thrownError) {
+                this.showError(xhr.status + ', ' + thrownError);
+            }.bind(this)
+        });
+    },
+
+    generateCategoriesView: function(childs) {
+		var result = [];
+
+		childs.map(function(child) {
+			if(child['child'].length == 0) {
+				result.push(
+					<MenuItem id={child['id']} key={child['id']} onClick={this.onCategoriesClick}>{child['title']}</MenuItem>
+				);
+				return result;
+			}
+
+			result.push(
+				<NavDropdown id={child['id']} title={child['title']} key={child['id']}>
+					{this.generateCategoriesView(child['child'])}
+	    		</NavDropdown>
+			);
+		}.bind(this));
+
+		return result;
+	},
+
 	render: function() {
-		var content = "";
+		/*var content = "";
 
 		if(this.state.has_data) {
 			content = <Panel header={<h3>Configure data</h3>} bsStyle="success">
 				    		<Row>
 								<Col xs={12}>
+									<Nav>
+				                        <NavDropdown title='test'>
+				                           	<MenuItem key='-1' onClick={this.onCategoriesClick}>not selected</MenuItem>
+				                           		{this.generateCategoriesView(sheet, window.categories)}
+				                        </NavDropdown>
+				                    </Nav>
 									{Object.keys(this.state.data['sheets']).map(function(sheet) {
-										return <Panel key={sheet} header={
-				                       		<Nav>
-				                           		<NavDropdown id={sheet} title={sheet + " -> " + this.state.categories_relations[sheet]['title']}>
-				                           			<MenuItem id={sheet + '_-1'} key='-1' onClick={this.onCategoriesClick}>not selected</MenuItem>
-				                           			{this.generateCategoriesView(sheet, window.categories)}
-				                           		</NavDropdown>
-				                       		</Nav>
-				                   		}>
-											<GridViewer
-												sheet={sheet}
-												data={this.state.data['sheets'][sheet]['data']}
-												products_relations={this.state.products_relations}
-												onProductsRelationSet={this.onProductsRelationSet}
-											/>
-										</Panel>
+										return
+											<Panel key={sheet} header={sheet}>
+												<GridViewer
+													sheet={sheet}
+													data={this.state.data['sheets'][sheet]['data']}
+													products_relations={this.state.products_relations}
+													onProductsRelationSet={this.onProductsRelationSet}
+												/>
+											</Panel>
 									}.bind(this))}
 								</Col>
 							</Row>
 				    	</Panel>;
-		}
+		}*/
 
-		return (
-			<Jumbotron>
+		/*return (
 				<Row>
 					<Col xs={10} xsOffset={1}>
-						<Panel header={<h3>Settings</h3>} bsStyle="primary">
+						<Panel className="margin-panel" header={<h3>Settings</h3>} bsStyle="primary">
 							<Row>
 								<Col xs={12}>
 									<Panel header={<h3>Select file</h3>}>
@@ -419,7 +488,67 @@ module.exports = React.createClass({
 			    		</div>
 					</Col>
 				</Row>
-			</Jumbotron>
+		);*/
+
+		var content = '';
+
+		if(this.state.hasData) {
+			content = 
+				<Panel header={<h3>Configure data</h3>} bsStyle="success">
+					<Row>
+						<Col xs={12}>
+							{<Nav>
+						        <NavDropdown id='categories-dropdown' title={'Global category: ' + this.state.globalCategory['title']}>
+						            <MenuItem id='-1' key='-1' onClick={this.onCategoriesClick}>not selected</MenuItem>
+						           		{this.generateCategoriesView(this.state.toboxCategories)}
+						        </NavDropdown>
+						    </Nav>}
+						    {Object.keys(this.state.data['sheets']).map(function(sheet) {
+								return <Panel key={sheet} header={sheet}>
+										<GridViewer
+											sheet={sheet}
+											data={this.state.data['sheets'][sheet]['data']}
+											products_relations={this.state.productsRelations}
+										/>
+									</Panel>
+							}.bind(this))}
+						</Col>
+					</Row>
+				</Panel>;
+		}
+
+		return (
+			<Row>
+				<Col xs={10} xsOffset={1}>
+					<Panel className="margin-panel" header={<h3>Settings</h3>} bsStyle="primary">
+						<Row>
+							<Col xs={12}>
+								<Panel header={<h3>Select file</h3>}>
+									<Input 
+										type="file"
+					  					help="Select csv/xls/xlsx file"
+					   					ref="filename"
+					   					onChange={this.handleFile} />
+				   				</Panel>
+				   			</Col>
+				   		</Row>
+						<Row>
+							<Col xs={3}>
+								<div id="csv-xls-update-button">
+								</div>
+							</Col>
+							<Col xs={12}>
+								<div id='csv-xls-progress-container'></div>
+							</Col>
+						</Row>			   		
+					</Panel>
+					<div id="csv-xls-importer-problem">
+					</div>
+					<div id="csv-xls-xlsx-importer-content">
+						{content}
+			    	</div>
+				</Col>
+			</Row>
 		);
 	}
 });

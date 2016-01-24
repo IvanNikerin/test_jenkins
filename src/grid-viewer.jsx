@@ -26,13 +26,14 @@ module.exports = React.createClass({
 
         var products_dict = Object.assign({'not selected':-1}, window.products);
         var product_params = Object.keys(window.products);
+        product_params.push('Категория');
         product_params.unshift('not selected');
 
         var primary_dict = {};
 
         Object.keys(this.props.products_relations[this.props.sheet]).map(function(header) {
             primary_dict[header] = false;
-        });
+        }.bind(this));
 
         return {
             'products_relations': this.props.products_relations,
@@ -109,7 +110,7 @@ module.exports = React.createClass({
             var ids = e.target.parentElement.childNodes[0].id.split('_');
             var title = this.state.products_relations[ids[0]][ids[1]]['title'];
 
-            if(title == 'not selected')
+            /*if(title == 'not selected')
             {
                 product_params.splice(product_params.indexOf(text),1);
             }
@@ -117,18 +118,23 @@ module.exports = React.createClass({
                 product_params.splice(product_params.indexOf(text),1);
                 if(title != text)
                     product_params.push(this.state.products_relations[ids[0]][ids[1]]['title']);
-            }
+            }*/
         }
         else {
             var ids = e.target.parentElement.childNodes[0].id.split('_');
             var title = this.state.products_relations[ids[0]][ids[1]]['title'];
-            if(title != text)
-                product_params.push(this.state.products_relations[ids[0]][ids[1]]['title']);
+            /*if(title != text)
+                product_params.push(this.state.products_relations[ids[0]][ids[1]]['title']);*/
         }
 
-        this.setState({
+        /*this.setState({
             'product_params': product_params
-        });
+        });*/
+
+        if(text == 'Категория') {
+            id = 'category';
+        }
+
 
         this.onProductsRelationSet(sheet, header, {title: text, id: id, 'is_primary': this.state.primary_dict[header]});
     },
@@ -159,7 +165,7 @@ module.exports = React.createClass({
         })
     },
 
-    componentDidMount: function() {
+    componentDidMount: function() {        
     },
 
 	render: function() {
@@ -167,7 +173,8 @@ module.exports = React.createClass({
         var primary_text = ": not selected";
 
         Object.keys(this.state.products_relations[this.state.sheet]).map(function(header) {
-            if(this.state.products_relations[this.state.sheet][header]['id'] != -1) {
+            if(this.state.products_relations[this.state.sheet][header]['id'] != -1 &&
+                this.state.products_relations[this.state.sheet][header]['title'] != 'Категория') {
                 if(this.state.products_relations[this.state.sheet][header]['is_primary']) {
                     this.state.primary_dict[header] = true;
                     primary_text = ": " + header;

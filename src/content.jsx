@@ -39,7 +39,7 @@ module.exports = React.createClass({displayName: 'Content',
                 ReactDOM.render(
                     <Tabs defaultActiveKey={1}>
                         <Tab eventKey={1} title="Categories relations">
-                            <CategoriesRelations userId={this.state.userId}/>
+                            <CategoriesRelations userId={this.state.userId} shopId={this.state.shopId}/>
                         </Tab>
                         <Tab eventKey={2} title="YML importer">
                             <YmlImporter shopId={this.state.shopId} />
