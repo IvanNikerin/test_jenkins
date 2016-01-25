@@ -69,15 +69,21 @@ module.exports = React.createClass({
 	    	success: function(result){
 				var exists = false;
 				var relation_json = {};
+				var autoupdate = false;
+				var autoupdate_url = '';
 	    		if(!('error' in result)) {
 	    			if('relation_json' in result) {
 	    				relation_json = JSON.parse(result['relation_json']);
+	    				autoupdate = result['autoupdate'];
+	    				autoupdate_url = result['update_url'];
 			    		if(result['file_name'] == filename) {
 							exists = true;
 			    		}
 		    		}
 	    		}
 				if(exists) {
+					document.getElementById('shop-autoupdate').checked = autoupdate;
+					document.getElementById('shop-autoupdate-url').value = autoupdate_url;
 					var new_data = {'categories': {}, 'prod_struct': {}};
 					new_data['prod_struct'] = data['prod_struct'];
 					if(relation_json['attrs'].length != 0 || relation_json['params'].length != 0) {
