@@ -22,39 +22,8 @@ var GridViewer = require('./grid-viewer');
 module.exports = React.createClass({
 	displayName: 'CsvXlsImporter',
 
-	/*getProfile: function() {
-        $.ajax({
-            type: "post",
-            url: '/tobox/api/beta/profile',
-            crossDomain: true,
-            contentType: 'application/json',
-            dataType: 'json',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            success: function(data){
-                if (this.isMounted()) {
-                    this.setState({
-                        shopId: data["shopIds"][0],
-                        userId: data["userId"]
-                    });
-                }
-            }.bind(this)
-        });        
-    },*/
-
 	getInitialState: function() {
 		return {
-			/*'categories_relations': {},
-			'products_relations': {},
-			'data': {sheets: []},
-			'has_data': false,
-			'userId': '',
-			'shopId': '',
-			'fileName': '',
-			'token': $.cookie('toboxkey'),
-			'tokens': $.cookie('toboxskey'),*/
-
 			'toboxCategories': [],
 			'globalCategory': {id: -1, title: 'not selected'},
 			'productsRelations': {},
@@ -72,14 +41,6 @@ module.exports = React.createClass({
 	componentDidMount: function() {
 		this.getToboxCategories();
 	},
-
-	/*onCategoriesRelationSet: function(sheet, tobox) {
-		var categories_relations = this.state.categories_relations;
-		categories_relations[sheet] = tobox;
-		this.setState({
-			'categories_relations': categories_relations
-		});
-	},*/
 
 	setDefaultRelations: function(data) {
 		var products_relations = {};
@@ -121,47 +82,6 @@ module.exports = React.createClass({
 			'globalCategory': {id: id, title: text}
 		});
 	},
-
-	//generateCategoriesView: function(sheet, childs) {
-	//	var result = [];
-
-		/*childs.map(function(child) {
-			if(child['child'].length == 0) {
-				result.push(
-					<MenuItem id={sheet + '_' + child['id']} key={child['id']} onClick={this.onCategoriesClick}>{child['title']}</MenuItem>
-				);
-				return result;
-			}
-
-			result.push(
-				<NavDropdown id={sheet + '_' + child['id']} title={child['title']} key={child['id']}>
-					{this.generateCategoriesView(sheet, child['child'])}
-	    		</NavDropdown>
-			);
-		}.bind(this));*/
-
-	//	return result;
-	//},
-
-	/*viewError: function(message, id, title) {
-		ReactDOM.render(
-   			<Panel header={<h3>{title}</h3>} bsStyle="danger">
-      			<Row>
-					<Col xs={12}>
-						{message}
-					</Col>
-				</Row>
-    		</Panel>,
-			document.getElementById(id)
-		);
-	},
-
-	hideError: function(id) {
-		ReactDOM.render(
-				<div></div>,
-				document.getElementById(id)
-			);
-	},*/
 
 	getRelations: function(data, filename) {
 		$.ajax({
@@ -428,67 +348,6 @@ module.exports = React.createClass({
 	},
 
 	render: function() {
-		/*var content = "";
-
-		if(this.state.has_data) {
-			content = <Panel header={<h3>Configure data</h3>} bsStyle="success">
-				    		<Row>
-								<Col xs={12}>
-									<Nav>
-				                        <NavDropdown title='test'>
-				                           	<MenuItem key='-1' onClick={this.onCategoriesClick}>not selected</MenuItem>
-				                           		{this.generateCategoriesView(sheet, window.categories)}
-				                        </NavDropdown>
-				                    </Nav>
-									{Object.keys(this.state.data['sheets']).map(function(sheet) {
-										return
-											<Panel key={sheet} header={sheet}>
-												<GridViewer
-													sheet={sheet}
-													data={this.state.data['sheets'][sheet]['data']}
-													products_relations={this.state.products_relations}
-													onProductsRelationSet={this.onProductsRelationSet}
-												/>
-											</Panel>
-									}.bind(this))}
-								</Col>
-							</Row>
-				    	</Panel>;
-		}*/
-
-		/*return (
-				<Row>
-					<Col xs={10} xsOffset={1}>
-						<Panel className="margin-panel" header={<h3>Settings</h3>} bsStyle="primary">
-							<Row>
-								<Col xs={12}>
-									<Panel header={<h3>Select file</h3>}>
-						   				<Input 
-						   					type="file"
-						   					help="Select csv/xls/xlsx file"
-						   					ref="filename"
-						   					onChange={this.handleFile} />
-					   				</Panel>
-					   			</Col>
-					   		</Row>
-							<Row>
-								<Col xs={3}>
-									<div id="csv-xls-update-button">
-									</div>
-								</Col>
-								<Col xs={12}>
-									<div id='csv-xls-progress-container'></div>
-								</Col>
-							</Row>			   		
-						</Panel>
-						<div id="csv-xls-importer-problem">
-						</div>
-						<div id="csv-xls-xlsx-importer-content">
-							{content}
-			    		</div>
-					</Col>
-				</Row>
-		);*/
 
 		var content = '';
 

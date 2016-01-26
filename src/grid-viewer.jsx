@@ -43,47 +43,6 @@ module.exports = React.createClass({
             'product_params': product_params,
             'primary_dict': primary_dict
         };
-        /*var header = this.props.header.slice();
-        header.splice(0, 0, "row");
-
-        var tobox_header = {};
-
-        for(var iter = 0; iter < header.length; iter ++) {
-            tobox_header[header[iter]] = "Not selected";
-        }
-
-        var data = [];
-
-        var isKey = {};
-
-        for(var topIter = 0; topIter < this.props.data.length; topIter ++) {
-            var nextDict = {};
-            this.props.data[topIter].splice(0, 0, topIter);
-            for(var iter = 0; iter < header.length; iter++) {
-
-                nextDict[header[iter]] = this.props.data[topIter][iter];
-                if(header[iter].indexOf("row") > -1)
-                    isKey[header[iter]] = true;
-                else
-                    isKey[header[iter]] = false;
-            }
-            data.push(nextDict);
-        }        
-        return {
-            'header': header,
-            'data': data,
-            'isKey': isKey,
-            'tobox_header': tobox_header
-        };*/
-    },
-
-    onNavClick: function(item, key) {
-        /*var tobox_header = this.state.tobox_header;
-        tobox_header[item] = key;
-
-        this.setState({
-            'tobox_header': tobox_header
-        });*/
     },
 
     onProductsRelationSet: function(sheet, name, tobox) {
@@ -109,27 +68,11 @@ module.exports = React.createClass({
         if(text != 'not selected') {
             var ids = e.target.parentElement.childNodes[0].id.split('_');
             var title = this.state.products_relations[ids[0]][ids[1]]['title'];
-
-            /*if(title == 'not selected')
-            {
-                product_params.splice(product_params.indexOf(text),1);
-            }
-            else {
-                product_params.splice(product_params.indexOf(text),1);
-                if(title != text)
-                    product_params.push(this.state.products_relations[ids[0]][ids[1]]['title']);
-            }*/
         }
         else {
             var ids = e.target.parentElement.childNodes[0].id.split('_');
             var title = this.state.products_relations[ids[0]][ids[1]]['title'];
-            /*if(title != text)
-                product_params.push(this.state.products_relations[ids[0]][ids[1]]['title']);*/
         }
-
-        /*this.setState({
-            'product_params': product_params
-        });*/
 
         if(text == 'Категория') {
             id = 'category';
@@ -163,9 +106,6 @@ module.exports = React.createClass({
             'products_relations': products_relations,
             'primary_dict': primary_dict
         })
-    },
-
-    componentDidMount: function() {        
     },
 
 	render: function() {
@@ -205,5 +145,3 @@ module.exports = React.createClass({
         );
     }
 });
-
-//onClick={this.onNavClick.bind(this, result, key)}

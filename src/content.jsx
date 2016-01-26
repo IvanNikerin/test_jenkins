@@ -73,6 +73,7 @@ module.exports = React.createClass({displayName: 'Content',
         });
     },
 
+    // TODO: this method must be removed - used just for tests
     login: function() {
         $.ajax({
             type: "post",
@@ -85,15 +86,6 @@ module.exports = React.createClass({displayName: 'Content',
                 'Content-Type': 'application/json'
             },
             success: function(data){
-                /*if (this.isMounted()) {
-                    this.setState({
-                        token: $.cookie('toboxkey'),
-                        tokens: $.cookie('toboxskey')
-                    });
-
-                    this.processTobox();
-                }*/
-
                 this.getProfile();
                 this.getCategories();
             }.bind(this),
@@ -105,7 +97,11 @@ module.exports = React.createClass({displayName: 'Content',
     },
 
     componentDidMount: function() {
-        this.login();
+        // INFO: tests without cookie
+        // this.login();
+
+        this.getCategories();
+        this.getProfile();
     },
 
 	render: function() {

@@ -1,7 +1,7 @@
 Install dependencies:
 	npm install
 
-For development simple run:
+For development mode simple run:
 	node server
 
 	- and go to http://127.0.0.1:8080/webpack-dev-server/
@@ -10,3 +10,11 @@ For build production run:
 	webpack
 
 	- this will generate assets folder with all needed bundles
+
+Speed up in development mode:
+	just comment lines 39,40 in webpack.config.js
+
+Proxy/hosts settings:
+	server.js contains app that init proxy to tobox and importer backend
+
+	don't forget to change ip's to values that you need
