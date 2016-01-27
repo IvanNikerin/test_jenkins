@@ -32,7 +32,8 @@ module.exports = React.createClass({
 			'hasData': false,
 			'data': {sheets: []},
 			'errorNeedHide': true,
-			'token': $.cookie('toboxkey'),
+			//INFO: for tests with our login
+			//'token': $.cookie('toboxkey'),
 			'fileName': ''
 
 		};
@@ -212,11 +213,12 @@ module.exports = React.createClass({
 	    		relation_json: JSON.stringify(relation_json),
 	    		data: JSON.stringify(this.state.data),
 	    		file_name: this.state.fileName,
-	    		file_type: 'csv-xls',
-	    		token: this.state.token
+	    		file_type: 'csv-xls'
+	    		//INFO: for tests with our login
+	    		//token: this.state.token
 	    	},
 	    	success: function(data){
-	    		console.log(data);
+	    		
 	    	}
    		});
 	},
@@ -289,7 +291,6 @@ module.exports = React.createClass({
 	showError : function(msg) {
 		var self = this;
 		this.viewError(msg);
-		console.log(this.state.errorNeedHide);
 		if(this.state.errorNeedHide) {
 			setTimeout(function() {
 				this.setState({errorNeedHide:true});
@@ -347,6 +348,12 @@ module.exports = React.createClass({
 		return result;
 	},
 
+	onProductsRelationsChange: function(products_relations) {
+		this.setState({
+			'productsRelations': products_relations
+		});
+	},
+
 	render: function() {
 
 		var content = '';
@@ -368,6 +375,7 @@ module.exports = React.createClass({
 											sheet={sheet}
 											data={this.state.data['sheets'][sheet]['data']}
 											products_relations={this.state.productsRelations}
+											onProductsRelationsChange={this.onProductsRelationsChange}
 										/>
 									</Panel>
 							}.bind(this))}

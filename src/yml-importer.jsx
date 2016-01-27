@@ -49,8 +49,9 @@ module.exports = React.createClass({
 			ymlCats: {},
 			enableUpload: false,
 			errorNeedHide: true,
-			'token': $.cookie('toboxkey'),
-			'tokens': $.cookie('toboxskey')
+			// INFO: for tests with our login
+			/*'token': $.cookie('toboxkey'),
+			'tokens': $.cookie('toboxskey')*/
 		};
 	},
 	
@@ -257,7 +258,7 @@ module.exports = React.createClass({
 		
 		if(war != '') {
 			this.showWarning(war);
-			//return;
+			return;
 		}
 		
 		relation_data['categories'] = data_cats;
@@ -269,14 +270,12 @@ module.exports = React.createClass({
 		var fname = this.state.file.name;
 		var shop = this.state.shopId;
 		var usr = this.state.userId;
-		console.log(fname, shop, usr, auto, autoupdate_url);
 		
    		$.ajax({
 	    	type: 'post',
 	    	url: '/importer/api/tobox/relations/',
-	    	data: {token: this.state.token, user_id: usr, shop_id: shop, update_url: autoupdate_url, relation_json: JSON.stringify(relation_data), autoupdate: auto, data: JSON.stringify(ajax_data), file_name: fname, file_type:'yml'},
+	    	data: {/*token: this.state.token,*/ user_id: usr, shop_id: shop, update_url: autoupdate_url, relation_json: JSON.stringify(relation_data), autoupdate: auto, data: JSON.stringify(ajax_data), file_name: fname, file_type:'yml'},
 	    	success: function(data){
-				console.log(data);
 	    	}.bind(this)
    		});
 		

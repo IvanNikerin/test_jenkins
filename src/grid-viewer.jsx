@@ -41,7 +41,7 @@ module.exports = React.createClass({
             'sheet': this.props.sheet,
             'product_params_dict': products_dict,
             'product_params': product_params,
-            'primary_dict': primary_dict
+            'primary_dict': primary_dict,
         };
     },
 
@@ -52,6 +52,8 @@ module.exports = React.createClass({
         this.setState({
             'products_relations': products_relations
         });
+
+        this.props.onProductsRelationsChange(products_relations);
     },
 
     onProductsClick: function(e) {

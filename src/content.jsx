@@ -14,8 +14,8 @@ var CategoriesRelations = require('./categories-relations');
 module.exports = React.createClass({displayName: 'Content',
     getInitialState: function() {
         return {
-            token: '',
-            tokens: '',
+            /*token: '',
+            tokens: '',*/
             shopId: '',
             userId: ''
         };
@@ -45,7 +45,7 @@ module.exports = React.createClass({displayName: 'Content',
                             <YmlImporter shopId={this.state.shopId} />
                         </Tab>
                         <Tab eventKey={3} title="CSV XLS XLSX importer">
-                            <CsvXlsImporter userId={this.state.userId} shopId={this.state.shopId} token={this.state.token}/>
+                            <CsvXlsImporter userId={this.state.userId} shopId={this.state.shopId}/>
                         </Tab>
                     </Tabs>,
                     document.getElementById('main')
@@ -98,7 +98,7 @@ module.exports = React.createClass({displayName: 'Content',
 
     componentDidMount: function() {
         // INFO: tests without cookie
-        // this.login();
+        //this.login();
 
         this.getCategories();
         this.getProfile();
