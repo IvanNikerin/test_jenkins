@@ -3,7 +3,7 @@ var ReactDOM = require('react-dom');
 
 require('./css/react-bootstrap-table-all.css');
 require('./css/custom-bootstrap-form.css');
-require('./css/darkly.min.css');
+require('bootstrap/dist/css/bootstrap.min.css');
 require('./css/custom.css');
 require('./react-bootstrap-table');
 

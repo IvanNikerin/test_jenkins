@@ -1,4 +1,5 @@
 var $ = require('jquery');
+require('jquery.cookie');
 
 var React = require('react');
 var ReactDOM = require('react-dom');
@@ -66,7 +67,7 @@ module.exports = React.createClass({
             url: '/importer/api/tobox/relations/category/',
             contentType: 'application/json',
             dataType: 'json',
-            data: {user_id: this.state.userId},
+            data: {user_id: this.state.userId, token: $.cookie('toboxkey')},
             headers: {
                 'Content-Type': 'application/json'
             },

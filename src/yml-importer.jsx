@@ -120,6 +120,19 @@ module.exports = React.createClass({
 			document.getElementById('yml-importer-content')
 		);
 	},
+
+	viewMessage: function(message) {
+		ReactDOM.render(
+   			<Panel header={<h3>Success</h3>} bsStyle="success">
+      			<Row>
+					<Col xs={12}>
+						{message}
+					</Col>
+				</Row>
+    		</Panel>,
+			document.getElementById('yml-importer-problem')
+		);
+	},
 	
 	clearContent: function() {
 		ReactDOM.render(
@@ -154,6 +167,18 @@ module.exports = React.createClass({
 	showWarning : function(msg) {
 		var self = this;
 		this.viewError(msg, 'Warning');
+		if(this.state.errorNeedHide) {
+			setTimeout(function() {
+				self.setState({errorNeedHide:true});
+				self.hideError();
+			}, 5000);
+		}
+		this.setState({errorNeedHide:false});
+	},
+
+	showMessage : function(msg) {
+		var self = this;
+		this.viewMessage(msg, 'Success');
 		if(this.state.errorNeedHide) {
 			setTimeout(function() {
 				self.setState({errorNeedHide:true});
@@ -276,6 +301,7 @@ module.exports = React.createClass({
 	    	url: '/importer/api/tobox/relations/',
 	    	data: {/*token: this.state.token,*/ user_id: usr, shop_id: shop, update_url: autoupdate_url, relation_json: JSON.stringify(relation_data), autoupdate: auto, data: JSON.stringify(ajax_data), file_name: fname, file_type:'yml'},
 	    	success: function(data){
+	    		this.showMessage('Your product will be updated')
 	    	}.bind(this)
    		});
 		

@@ -32,6 +32,7 @@ module.exports = React.createClass({
 			'hasData': false,
 			'data': {sheets: []},
 			'errorNeedHide': true,
+			'messageNeedHide': true,
 			//INFO: for tests with our login
 			//'token': $.cookie('toboxkey'),
 			'fileName': ''
@@ -218,8 +219,8 @@ module.exports = React.createClass({
 	    		//token: this.state.token
 	    	},
 	    	success: function(data){
-	    		
-	    	}
+	    		this.showMessage('Your product will be updated');
+	    	}.bind(this)
    		});
 	},
 
@@ -288,6 +289,31 @@ module.exports = React.createClass({
 		);
 	},
 
+	viewMessage: function(msg) {
+		ReactDOM.render(
+   			<Panel header={<h3>Success</h3>} bsStyle="success">
+      			<Row>
+					<Col xs={12}>
+						{msg}
+					</Col>
+				</Row>
+    		</Panel>,
+			document.getElementById('csv-xls-importer-message')
+		);
+	},
+
+	showMessage : function(msg) {
+		var self = this;
+		this.viewMessage(msg);
+		if(this.state.messageNeedHide) {
+			setTimeout(function() {
+				this.setState({messageNeedHide:true});
+				this.hideMessage();
+			}.bind(this), 5000);
+		}
+		this.setState({messageNeedHide:false});
+	},
+
 	showError : function(msg) {
 		var self = this;
 		this.viewError(msg);
@@ -304,6 +330,13 @@ module.exports = React.createClass({
 		ReactDOM.render(
 			<div></div>,
 			document.getElementById('csv-xls-importer-problem')
+		);
+	},
+
+	hideMessage: function() {
+		ReactDOM.render(
+			<div></div>,
+			document.getElementById('csv-xls-importer-message')
 		);
 	},
 
@@ -409,6 +442,8 @@ module.exports = React.createClass({
 							</Col>
 						</Row>			   		
 					</Panel>
+					<div id="csv-xls-importer-message">
+					</div>
 					<div id="csv-xls-importer-problem">
 					</div>
 					<div id="csv-xls-xlsx-importer-content">
