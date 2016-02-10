@@ -26,8 +26,8 @@ module.exports = React.createClass({displayName: 'Content',
             shopId: '',
             userId: '',
             modalIsOpen: false,
-            phoneNumber: '',
-            password: ''
+            phoneNumber: '79689854262',
+            password: '123456'
         };
     },
 
@@ -98,8 +98,8 @@ module.exports = React.createClass({displayName: 'Content',
     },
 
     login: function() {
-        var username = this.refs.username.props.value;
-        var password = this.refs.password.props.value;
+        var username = this.state.phoneNumber;
+        var password = this.state.password;
 
         $.ajax({
             type: "post",
@@ -135,8 +135,16 @@ module.exports = React.createClass({displayName: 'Content',
         }
     },
 
-    onChange: function() {
+    onChangePhone: function() {
+        this.setState({
+            phoneNumber: this.refs.phone.getValue()
+        });
+    },
 
+    onChangePassword: function() {
+        this.setState({
+            password: this.refs.password.getValue()
+        });
     },
 
 	render: function() {
@@ -154,9 +162,9 @@ module.exports = React.createClass({displayName: 'Content',
                                             <Label>Login:</Label>
                                             <Input 
                                                 type="text"
-                                                value="79689854262"
-                                                ref="username"
-                                                onChange={this.onChange}
+                                                value={this.state.phoneNumber}
+                                                ref="phone"
+                                                onChange={this.onChangePhone}
                                             />
                                        </Col>
                                    </Row>
@@ -165,9 +173,9 @@ module.exports = React.createClass({displayName: 'Content',
                                            <Label>Password:</Label>
                                            <Input
                                                type="password"
-                                               value="123456"
+                                               value={this.state.password}
                                                ref="password"
-                                               onChange={this.onChange}
+                                               onChange={this.onChangePassword}
                                            />
                                        </Col>
                                    </Row>
