@@ -10,9 +10,9 @@ var devServer = new WebpackDevServer(
 		publicPath: '/assets/',
 		proxy: {
         	/*'/tobox/*': 'http://127.0.0.1:9090',*/
-          '/tobox/*':'http://web.tobox.ru',
-          '/importer/*':'http://127.0.0.1:9090',
-          /*'/importer/*': 'http://176.112.201.219:9090',*/
+          /*'/importer/*':'http://127.0.0.1:9090',*/
+          '/tobox/*':'http://176.112.201.219:9090',
+          '/importer/*': 'http://176.112.201.219:9090',
     	},
     	stats: { 
     		colors: true
