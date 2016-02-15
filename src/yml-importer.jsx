@@ -416,7 +416,7 @@ module.exports = React.createClass({
 		
 		//var extension = input.files[0].name.split('.').pop();
     	//if(extension == "yml" || extension == "xml") {
-		//	this.setState({file: input.files[0]});
+		this.setState({file: input.files[0]});
     	//} else {
 		//	this.viewError("Bad file type");
     	//}
