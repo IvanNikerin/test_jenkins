@@ -280,8 +280,8 @@ module.exports = React.createClass({
 		if(req_count < window.required.length) {
 			war += 'Not all product relations are set';
 		}
-		
-		if(war != '') {
+
+		if(war != '' && !withData) {
 			this.showWarning(war);
 			return;
 		}
@@ -306,7 +306,7 @@ module.exports = React.createClass({
 	    	url: '/importer/api/tobox/relations/',
 	    	data: {/*token: this.state.token,*/ user_id: usr, shop_id: shop, update_url: autoupdate_url, relation_json: JSON.stringify(relation_data), autoupdate: auto, data: yml_data, file_name: fname, file_type:'yml'},
 	    	success: function(data){
-	    		this.showMessage('Your product will be updated')
+	    		//this.showMessage('Your product will be updated')
 	    	}.bind(this)
    		});
 		
@@ -460,11 +460,11 @@ module.exports = React.createClass({
 									<Button onClick={this.parse} >Scan YML</Button>
 								</Col>
 								<Col xs={3}>
-									<Button onClick={this.saveChanges.bind(true)}> Save changes</Button>
+									<Button onClick={this.uploadFile.bind(this,true)}> Save changes</Button>
 								</Col>
 								<Col xs={3}>
 									<div id='btn-upload'>
-										<ButtonInput bsStyle="primary" value="Upload Products" onClick={this.uploadFile.bind(false)} />
+										<ButtonInput bsStyle="primary" value="Upload Products" onClick={this.uploadFile.bind(this,false)} />
 									</div>
 								</Col>
 								<Col xs={2}>
