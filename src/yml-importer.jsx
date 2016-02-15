@@ -429,13 +429,19 @@ module.exports = React.createClass({
 						<Panel className="margin-panel" header={<h3>Settings</h3>} bsStyle="primary">
 							<Row>
 								<Col xs={12}>
-									<Panel header={<h3>Select file</h3>}>
-						   				<Input 
-						   					type="file"
-						   					help="Select YML file"
-						   					ref="filename"
-						   					onChange={this.handleFile} />
-
+									<Panel header={<h3>Select file or url</h3>}>
+										<Row>
+											<Col xs={6}>
+								   				<Input 
+								   					type="file"
+								   					help="Select YML file"
+								   					ref="filename"
+								   					onChange={this.handleFile} />
+								   			</Col>		
+							   				<Col xs={6}>
+												<Input id="shop-autoupdate-url" type="text" placeholder="URL" />
+											</Col>
+										</Row>
 					   				</Panel>
 					   			</Col>
 					   		</Row>
@@ -449,15 +455,15 @@ module.exports = React.createClass({
 									<Button onClick={this.parse} >Scan YML</Button>
 								</Col>
 								<Col xs={3}>
+									<Button onClick={this.saveChanges}> Save changes</Button>
+								</Col>
+								<Col xs={3}>
 									<div id='btn-upload'>
 										<ButtonInput bsStyle="primary" value="Upload Products" onClick={this.uploadFile} />
 									</div>
 								</Col>
 								<Col xs={2}>
 									<Input id="shop-autoupdate" type="checkbox" label="Autoupdate" />	
-								</Col>
-								<Col xs={4}>
-									<Input id="shop-autoupdate-url" type="text" placeholder="Autoupdate URL" />
 								</Col>
 							</Row>
 						</Panel>
