@@ -349,7 +349,8 @@ module.exports = React.createClass({
 	    	type: 'get',
 	    	url: url,
 	    	data: {
-	    		url: yml_url
+	    		url: yml_url,
+	    		filename: gen_file_name
 	    	},
 	    	success: function(data){
 				this.getRelations(data, gen_file_name)
