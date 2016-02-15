@@ -188,7 +188,7 @@ module.exports = React.createClass({
 		this.setState({errorNeedHide:false});
 	},
 	
-	uploadFile : function() {
+	uploadFile : function(withData) {
 		this.hideError();
 		if(this.state.file == '') {
 			this.showWarning('Please select file');
@@ -296,10 +296,15 @@ module.exports = React.createClass({
 		var shop = this.state.shopId;
 		var usr = this.state.userId;
 		
+		var yml_data = null;
+		if(withData) {
+			yml_data = JSON.stringify(ajax_data)
+		}
+		
    		$.ajax({
 	    	type: 'post',
 	    	url: '/importer/api/tobox/relations/',
-	    	data: {/*token: this.state.token,*/ user_id: usr, shop_id: shop, update_url: autoupdate_url, relation_json: JSON.stringify(relation_data), autoupdate: auto, data: JSON.stringify(ajax_data), file_name: fname, file_type:'yml'},
+	    	data: {/*token: this.state.token,*/ user_id: usr, shop_id: shop, update_url: autoupdate_url, relation_json: JSON.stringify(relation_data), autoupdate: auto, data: yml_data, file_name: fname, file_type:'yml'},
 	    	success: function(data){
 	    		this.showMessage('Your product will be updated')
 	    	}.bind(this)
@@ -455,11 +460,11 @@ module.exports = React.createClass({
 									<Button onClick={this.parse} >Scan YML</Button>
 								</Col>
 								<Col xs={3}>
-									<Button onClick={this.saveChanges}> Save changes</Button>
+									<Button onClick={this.saveChanges.bind(true)}> Save changes</Button>
 								</Col>
 								<Col xs={3}>
 									<div id='btn-upload'>
-										<ButtonInput bsStyle="primary" value="Upload Products" onClick={this.uploadFile} />
+										<ButtonInput bsStyle="primary" value="Upload Products" onClick={this.uploadFile.bind(false)} />
 									</div>
 								</Col>
 								<Col xs={2}>
