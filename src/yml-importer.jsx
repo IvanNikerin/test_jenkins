@@ -413,12 +413,13 @@ module.exports = React.createClass({
 		this.hideError();
 		
     	var input = event.target;
-		var extension = input.files[0].name.split('.').pop();
-    	if(extension == "yml" || extension == "xml") {
-			this.setState({file: input.files[0]});
-    	} else {
-			this.viewError("Bad file type");
-    	}
+		
+		//var extension = input.files[0].name.split('.').pop();
+    	//if(extension == "yml" || extension == "xml") {
+		//	this.setState({file: input.files[0]});
+    	//} else {
+		//	this.viewError("Bad file type");
+    	//}
 	},
 
 	render: function() {
