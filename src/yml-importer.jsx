@@ -307,21 +307,7 @@ module.exports = React.createClass({
 		
 	},
 	
-	parse: function() {
-		this.hideError();
-		var file = this.state.file;
-		if(file == '') {
-			this.viewError('Please select file', 'Warning');
-			var self = this;
-			if(this.state.errorNeedHide) {
-				setTimeout(function() {
-					self.setState({errorNeedHide:true});
-					self.hideError();
-				}, 8000);
-			}
-			this.setState({errorNeedHide:false});
-			return;
-		}
+	uploadYmlFile: function(file) {
 		var url = '/importer/api/parsers/yml/';
 		this.clearContent();
 		ReactDOM.render(<ProgressBar now={0} label="%(percent)s%" />, document.getElementById('progress-container'));
@@ -354,6 +340,49 @@ module.exports = React.createClass({
 				this.getRelations(data, file.name)
 	    	}.bind(this)
    		});
+	},
+	
+	uploadYmlUrl: function(yml_url, gen_file_name) {
+		var url = '/importer/api/parsers/yml/';
+		this.clearContent();
+		$.ajax({
+	    	type: 'get',
+	    	url: url,
+	    	data: {
+	    		url: yml_url
+	    	},
+	    	success: function(data){
+				this.getRelations(data, gen_file_name)
+	    	}.bind(this)
+   		});
+	},
+	
+	parse: function() {
+		this.hideError();
+		var file = this.state.file;
+		var yml_url = document.getElementById('shop-autoupdate-url').value;
+		if(file == '') {
+			if(yml_url == '') {
+				this.viewError('Please select file or set correct URL to your YML', 'Warning');
+				var self = this;
+				if(this.state.errorNeedHide) {
+					setTimeout(function() {
+						self.setState({errorNeedHide:true});
+						self.hideError();
+					}, 8000);
+				}
+				this.setState({errorNeedHide:false});
+				return;
+			} else { 
+				var urlparts = yml_url.substring(yml_url.lastIndexOf("/") + 1).split("?");
+				if(urlparts.length > 1) {
+					this.setState({file: urlparts[1]});
+					this.uploadYmlUrl(yml_url, urlparts[1]);
+				}
+			}
+		} else {
+			this.uploadYmlFile(file);
+		}
 	},
 	
 	viewError: function(message, title) {
