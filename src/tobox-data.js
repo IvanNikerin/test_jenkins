@@ -4,3 +4,23 @@ window.tobox_pictures = 'pictures';
 window.products = {'Картинка': 'pictures', 'Заголовок': 'title', 'Описание': 'description', 'Видимость': 'hidden', 'Цена': 'price'};
 window.required = ['pictures','title','description','price']
 window.messages = {'not_selected': 'Not selected'};
+
+window.translations = {
+	'en': {
+			'not_selected': 'Not selected'
+	}
+}
+
+window.translate = function(tag) {
+	var lang = '';
+	if (navigator.languages != undefined) {
+		lang = navigator.languages[0]; 
+	} else {
+		lang = navigator.language;
+	}
+	if (lang != '') {
+		var parts = lang.split('-')[0];
+	}
+	console.log(lang);
+	return window.translations[lang][tag];
+}
