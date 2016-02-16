@@ -19,7 +19,11 @@ window.translate = function(tag) {
 		lang = navigator.language;
 	}
 	if (lang != '') {
-		var parts = lang.split('-')[0];
+		lang = lang.split('-')[0];
+	}
+
+	if (!(lang in window.translations)) {
+		lang = 'en';
 	}
 	console.log(lang);
 	return window.translations[lang][tag];
