@@ -11,8 +11,8 @@ module.exports = React.createClass({
 			rows.push(<option key={key} value={window.products[key]}>{key}</option>);
 		}
 		return (
-			<Input className="table-element" type="select" placeholder={window.messages['not_selected']}>
-				 <option value="-1">{window.messages['not_selected']}</option>
+			<Input className="table-element" type="select" placeholder={window.translate('not_selected')}>
+				 <option value="-1">{window.translate('not_selected')}</option>
 				 <option value={window.tobox_uuid['value']}>{window.tobox_uuid['name']}</option>
 				{rows}
 			</Input>
