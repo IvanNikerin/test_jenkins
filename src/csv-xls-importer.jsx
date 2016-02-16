@@ -162,7 +162,7 @@ module.exports = React.createClass({
 	    		ReactDOM.render(<ProgressBar now={100} label="%(percent)s%" />, document.getElementById('csv-xls-progress-container'));
 	    		setTimeout(function() {
 	    			ReactDOM.render(<div></div>, document.getElementById('csv-xls-progress-container'));
-	    			ReactDOM.render(<ButtonInput  bsStyle="primary" value="Upload" onClick={this.prepareUpdate}/>, document.getElementById('csv-xls-update-button'));
+	    			ReactDOM.render(<ButtonInput  bsStyle="primary" value={window.translate('upload')} onClick={this.prepareUpdate}/>, document.getElementById('csv-xls-update-button'));
 	    		}.bind(this),1500);
 
 	    		this.setDefaultRelations(data);
@@ -219,7 +219,7 @@ module.exports = React.createClass({
 	    		//token: this.state.token
 	    	},
 	    	success: function(data){
-	    		this.showMessage('Your product will be updated');
+	    		//this.showMessage('Your product will be updated');
 	    	}.bind(this)
    		});
 	},
@@ -262,7 +262,7 @@ module.exports = React.createClass({
 		Object.keys(this.state.data['sheets']).map(function(sheet) {
 			if(needed_keys[sheet].length != 0) {
 				error_count ++;
-				error = error + '! Check required relations: ' + JSON.stringify(needed_keys[sheet]) + ' for sheet: ' + sheet;
+				error = error + '! '+ window.translate('check_relations') +': ' + JSON.stringify(needed_keys[sheet]) + ' ' + window.translate('for_sheet') +': ' + sheet;
 			}
 		});
 		if(error != "") {
@@ -278,7 +278,7 @@ module.exports = React.createClass({
 
 	viewError: function(msg) {
 		ReactDOM.render(
-   			<Panel header={<h3>Configure data</h3>} bsStyle="danger">
+   			<Panel header={<h3>{window.translate('error')}</h3>} bsStyle="danger">
       			<Row>
 					<Col xs={12}>
 						{msg}
@@ -291,7 +291,7 @@ module.exports = React.createClass({
 
 	viewMessage: function(msg) {
 		ReactDOM.render(
-   			<Panel header={<h3>Success</h3>} bsStyle="success">
+   			<Panel header={<h3>{window.translate('info')}</h3>} bsStyle="success">
       			<Row>
 					<Col xs={12}>
 						{msg}
@@ -393,11 +393,11 @@ module.exports = React.createClass({
 
 		if(this.state.hasData) {
 			content = 
-				<Panel header={<h3>Configure data</h3>} bsStyle="success">
+				<Panel header={<h3>{window.translate('configure_data')}</h3>} bsStyle="success">
 					<Row>
 						<Col xs={12}>
 							{<Nav>
-						        <NavDropdown id='categories-dropdown' title={'Global category: ' + this.state.globalCategory['title']}>
+						        <NavDropdown id='categories-dropdown' title={window.translate('default_category') + ': ' + this.state.globalCategory['title']}>
 						            <MenuItem id='-1' key='-1' onClick={this.onCategoriesClick}>not selected</MenuItem>
 						           		{this.generateCategoriesView(this.state.toboxCategories)}
 						        </NavDropdown>
@@ -420,13 +420,12 @@ module.exports = React.createClass({
 		return (
 			<Row>
 				<Col xs={10} xsOffset={1}>
-					<Panel className="margin-panel" header={<h3>Settings</h3>} bsStyle="primary">
+					<Panel className="margin-panel" header={<h3>{window.translate('settings')}</h3>} bsStyle="primary">
 						<Row>
 							<Col xs={12}>
-								<Panel header={<h3>Select file</h3>}>
-									<Input 
+								<Panel header={<h3>{window.translate('file_selection')}</h3>}>
+									<Input
 										type="file"
-					  					help="Select csv/xls/xlsx file"
 					   					ref="filename"
 					   					onChange={this.handleFile} />
 				   				</Panel>

@@ -138,7 +138,7 @@ module.exports = React.createClass({
 		);
 		
 		ReactDOM.render(
-			<Button className="table-element" bsStyle="danger" onClick={this.deleteRow.bind(this, id)}>Delete</Button>,
+			<Button className="table-element" bsStyle="danger" onClick={this.deleteRow.bind(this, id)}>{window.translate('delete')}</Button>,
 			document.getElementById('delete-button-' + id)
 		);
 		
@@ -294,21 +294,21 @@ module.exports = React.createClass({
     		table = <div>
     					<Row>
     						<Col xs={4} xsOffset={4}>
-    							<Button bsSize="large" block className="update-button" onClick={this.update} bsStyle="primary">Update</Button>
+    							<Button bsSize="large" block className="update-button" onClick={this.update} bsStyle="primary">{window.translate('update')}</Button>
     						</Col>
     					</Row>
 	    				<Table striped bordered condensed hover>
 							<thead>
 								<tr>
-									<th className="col-xs-4">User categories</th>
-									<th className="table-nav-col">Tobox categories</th>
+									<th className="col-xs-4">{window.translate('user_categories')}</th>
+									<th className="table-nav-col">{window.translate('tobox_categories')}</th>
 									<th className="table-delete-col"></th>
 								</tr>
 							</thead>
 							<tbody id="table-cat">
 							</tbody>
 						</Table>
-						<Button bsStyle="success" className="pull-right add-button" onClick={this.addRow} pull-right>Add</Button>
+						<Button bsStyle="success" className="pull-right add-button" onClick={this.addRow} pull-right>{window.translate('add')}</Button>
 					</div>;
     	}
 
@@ -317,7 +317,7 @@ module.exports = React.createClass({
 		    		<Col xs={10} xsOffset={1}>
 		    			<div id="categories-relations-problem">
 						</div>
-						<Panel className="margin-panel" header='Assign categories to tobox' bsStyle="primary">
+						<Panel className="margin-panel" header={window.translate('assign_categories')} bsStyle="primary">
 							{table}
 						</Panel>
 					</Col>

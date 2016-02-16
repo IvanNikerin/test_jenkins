@@ -65,7 +65,7 @@ module.exports = React.createClass({
 		);
 		
 		ReactDOM.render(
-			<Button className="table-element" bsStyle="danger" onClick={this.deleteRow.bind(this, pid, tableName)}>Delete</Button>,
+			<Button className="table-element" bsStyle="danger" onClick={this.deleteRow.bind(this, pid, tableName)}>{window.translate('delete')}</Button>,
 			document.getElementById('delete-button-'+ tableName + pid)
 		);
 		
@@ -93,35 +93,35 @@ module.exports = React.createClass({
 	render: function() {
 		return (
 		<Col xs={12}>
-			<Panel header='Assign product attributes from YML'>
+			<Panel header={window.translate('assign_attribute')}>
 				<Table striped bordered condensed hover>
 					<thead>
 					  <tr>
-						<th className="col-xs-4">Attribute name in YML</th>
-						<th>Product Attribute</th>
-						<th className="col-xs-1">Autoupdate</th>
+						<th className="col-xs-4">{window.translate('product_attribute_name')}</th>
+						<th>{window.translate('product_tobox_parameters')}</th>
+						<th className="col-xs-1">{window.translate('autoupdate')}</th>
 						<th className="table-delete-col"></th>
 					  </tr>
 					</thead>
 					<tbody id="prod-attr">
 					</tbody>
 				</Table>
-				<Button className="pull-right add-button" bsStyle="success" onClick={this.addRow.bind(this, 'prod-attr')} >Add</Button>
+				<Button className="pull-right add-button" bsStyle="success" onClick={this.addRow.bind(this, 'prod-attr')} >{window.translate('add')}</Button>
 			</Panel>
-			<Panel header='Assign product params from YML'>
+			<Panel header={window.translate('assign_product_params')}>
 				<Table striped bordered condensed hover>
 					<thead>
 					  <tr>
-						<th className="col-xs-4">Param name in YML</th>
-						<th>Product Attribute</th>
-						<th className="col-xs-1">Autoupdate</th>
+						<th className="col-xs-4">{window.translate('param_name_in_yml')}</th>
+						<th>{window.translate('product_tobox_parameters')}</th>
+						<th className="col-xs-1">{window.translate('autoupdate')}</th>
 						<th className="table-delete-col"></th>
 					  </tr>
 					</thead>
 					<tbody id="prod-param">
 					</tbody>
 				</Table>
-				<Button className="pull-right add-button" bsStyle="success" onClick={this.addRow.bind(this, 'prod-param')} >Add</Button>
+				<Button className="pull-right add-button" bsStyle="success" onClick={this.addRow.bind(this, 'prod-param')} >{window.translate('add')}</Button>
 			</Panel>
 		</Col>
 		);

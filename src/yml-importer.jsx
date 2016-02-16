@@ -110,7 +110,7 @@ module.exports = React.createClass({
 	
 	viewError: function(message) {
 		ReactDOM.render(
-   			<Panel header={<h3>Configure data</h3>} bsStyle="danger">
+   			<Panel header={<h3>{window.translate('error')}</h3>} bsStyle="danger">
       			<Row>
 					<Col xs={12}>
 						{message}
@@ -123,7 +123,7 @@ module.exports = React.createClass({
 
 	viewMessage: function(message) {
 		ReactDOM.render(
-   			<Panel header={<h3>Success</h3>} bsStyle="success">
+   			<Panel header={<h3>{window.translate('success')}</h3>} bsStyle="success">
       			<Row>
 					<Col xs={12}>
 						{message}
@@ -144,7 +144,7 @@ module.exports = React.createClass({
 	viewYml: function(data) {
 		if (data) {
 			ReactDOM.render(
-				<Panel header={<h3>Configure data</h3>} bsStyle="success">
+				<Panel header={<h3>{window.translate('configure_data')}</h3>} bsStyle="success">
 					<Row>
 						<YmlProducts data={data['prod_struct']} />		
 					</Row>
@@ -152,7 +152,7 @@ module.exports = React.createClass({
 				document.getElementById('yml-importer-content')				
 			);
 		} else { 
-		    alert("Failed to load file");
+		    alert(window.translate('failed_to_load_file'));
 		}	
 	},
 	
@@ -166,7 +166,7 @@ module.exports = React.createClass({
 	
 	showWarning : function(msg) {
 		var self = this;
-		this.viewError(msg, 'Warning');
+		this.viewError(msg, window.translate('error'));
 		if(this.state.errorNeedHide) {
 			setTimeout(function() {
 				self.setState({errorNeedHide:true});
@@ -178,7 +178,7 @@ module.exports = React.createClass({
 
 	showMessage : function(msg) {
 		var self = this;
-		this.viewMessage(msg, 'Success');
+		this.viewMessage(msg, window.translate('success'));
 		if(this.state.errorNeedHide) {
 			setTimeout(function() {
 				self.setState({errorNeedHide:true});
@@ -191,11 +191,11 @@ module.exports = React.createClass({
 	uploadFile : function(withData) {
 		this.hideError();
 		if(this.state.file == '') {
-			this.showWarning('Please select file');
+			this.showWarning(window.translate('please_select_file_or_url'));
 			return;
 		}
 		if(!this.state.enableUpload) {
-			this.showWarning('Please scan your file');
+			this.showWarning(window.translate('please_select_file_or_url'));
 			return;
 		}
 		
@@ -369,7 +369,7 @@ module.exports = React.createClass({
 		var yml_url = document.getElementById('shop-autoupdate-url').value;
 		if(file == '') {
 			if(yml_url == '') {
-				this.viewError('Please select file or set correct URL to your YML', 'Warning');
+				this.viewError(window.translate('please_select_file_or_url'), window.translate('error'));
 				var self = this;
 				if(this.state.errorNeedHide) {
 					setTimeout(function() {
@@ -431,15 +431,14 @@ module.exports = React.createClass({
 		return (
 				<Row>
 					<Col xs={10} xsOffset={1}>
-						<Panel className="margin-panel" header={<h3>Settings</h3>} bsStyle="primary">
+						<Panel className="margin-panel" header={<h3>{window.translate('settings')}</h3>} bsStyle="primary">
 							<Row>
 								<Col xs={12}>
-									<Panel header={<h3>Select file or url</h3>}>
+									<Panel header={<h3>{window.translate('file_or_url_selection')}</h3>}>
 										<Row>
 											<Col xs={6}>
 								   				<Input 
 								   					type="file"
-								   					help="Select YML file"
 								   					ref="filename"
 								   					onChange={this.handleFile} />
 								   			</Col>		
@@ -457,18 +456,18 @@ module.exports = React.createClass({
 							</Row>
 							<Row>
 								<Col xs={3}>
-									<Button onClick={this.parse} >Scan YML</Button>
+									<Button onClick={this.parse} >{window.translate('scan')}</Button>
 								</Col>
 								<Col xs={3}>
-									<Button onClick={this.uploadFile.bind(this,true)}> Save changes</Button>
+									<Button onClick={this.uploadFile.bind(this,true)}>{window.translate('save')}</Button>
 								</Col>
 								<Col xs={3}>
 									<div id='btn-upload'>
-										<ButtonInput bsStyle="primary" value="Upload Products" onClick={this.uploadFile.bind(this,false)} />
+										<ButtonInput bsStyle="primary" value={window.translate('upload')} onClick={this.uploadFile.bind(this,false)} />
 									</div>
 								</Col>
 								<Col xs={2}>
-									<Input id="shop-autoupdate" type="checkbox" label="Autoupdate" />	
+									<Input id="shop-autoupdate" type="checkbox" label={window.translate('autoupdate')} />	
 								</Col>
 							</Row>
 						</Panel>

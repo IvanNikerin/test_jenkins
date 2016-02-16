@@ -59,13 +59,13 @@ module.exports = React.createClass({displayName: 'Content',
                 ReactDOM.render(
                     <div>
                         <Tabs defaultActiveKey={1}>
-                            <Tab eventKey={1} title="Categories relations">
+                            <Tab eventKey={1} title={window.translate("categories_relations")}>
                                 <CategoriesRelations userId={this.state.userId} shopId={this.state.shopId}/>
                             </Tab>
-                            <Tab eventKey={2} title="YML importer">
+                            <Tab eventKey={2} title={"YML " + window.translate('importer')}>
                                 <YmlImporter shopId={this.state.shopId} />
                             </Tab>
-                            <Tab eventKey={3} title="CSV XLS XLSX importer">
+                            <Tab eventKey={3} title={"CSV XLS XLSX " + window.translate('importer')}>
                                 <CsvXlsImporter userId={this.state.userId} shopId={this.state.shopId}/>
                             </Tab>
                         </Tabs>
@@ -159,7 +159,7 @@ module.exports = React.createClass({displayName: 'Content',
                                 <Well>
                                     <Row>
                                         <Col >
-                                            <Label>Login:</Label>
+                                            <Label>{window.translate('login')}:</Label>
                                             <Input 
                                                 type="text"
                                                 value={this.state.phoneNumber}
@@ -170,7 +170,7 @@ module.exports = React.createClass({displayName: 'Content',
                                    </Row>
                                    <Row>
                                        <Col >
-                                           <Label>Password:</Label>
+                                           <Label>{window.translate('password')}</Label>
                                            <Input
                                                type="password"
                                                value={this.state.password}
@@ -181,7 +181,7 @@ module.exports = React.createClass({displayName: 'Content',
                                    </Row>
                                    <Row>
                                        <Col >
-                                           <ButtonInput bsStyle="primary" onClick={this.login} >Login</ButtonInput>
+                                           <ButtonInput bsStyle="primary" onClick={this.login} >{window.translate('login_button')}</ButtonInput>
                                        </Col>
                                    </Row>
                                </Well>

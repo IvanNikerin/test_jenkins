@@ -127,7 +127,7 @@ module.exports = React.createClass({
 
 		return (
             <div>
-                <DropdownButton title={"Primary key" + primary_text} id="bg-nested-dropdown">
+                <DropdownButton title={window.translate("primary_key") + primary_text} id="bg-nested-dropdown">
                     {primary_keys_list}
                 </DropdownButton>
                 <BootstrapTable data={this.state.normalizedData} striped={true} hover={true} condensed={true} pagination={true}>
