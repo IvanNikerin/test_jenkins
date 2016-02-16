@@ -24,7 +24,9 @@ module.exports = React.createClass({
 	componentDidMount: function() {
 		var attrs = this.state.prod_struct['attrs'];
 		var params = this.state.prod_struct['params'];
+		
 		if(!('rels' in this.state.prod_struct)) {
+			/*
 			for (var i in attrs) {
 				this.addRow('prod-attr');
 				this.rowSelect(this.state.rowId, [attrs[i],'',false], 'prod-attr');
@@ -32,7 +34,7 @@ module.exports = React.createClass({
 			for (var j in params) {
 				this.addRow('prod-param');
 				this.rowSelect(this.state.rowId, [params[j],'',false], 'prod-param');
-			}
+			}*/
 		} else {
 			var attrs_rels = this.state.prod_struct['attrs-rels'];
 			var params_rels = this.state.prod_struct['params-rels'];
@@ -45,6 +47,7 @@ module.exports = React.createClass({
 				this.rowSelect(this.state.rowId, [params_rels[j]['yml'],params_rels[j]['tobox'],params_rels[j]['autoupdate']], 'prod-param');
 			}
 		}
+
     },
 	addRow: function(tableName) {
 		var pid = this.state.rowId
