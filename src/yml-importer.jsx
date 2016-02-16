@@ -297,7 +297,7 @@ module.exports = React.createClass({
 		var usr = this.state.userId;
 		
 		var yml_data = null;
-		if(withData) {
+		if(!withData) {
 			yml_data = JSON.stringify(ajax_data)
 		}
 		
