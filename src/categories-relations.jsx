@@ -116,7 +116,7 @@ module.exports = React.createClass({
     },
 	
 	preventClosingDropdown: function(e) {
-		alert('preventing dropdown to close');
+		//alert('preventing dropdown to close');
 
 	},
 	filterCategoties: function(e) {

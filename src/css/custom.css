@@ -41,3 +41,12 @@ input.table-checkbox[type="checkbox"]{
 	margin-bottom:-10px;
 }
 
+.scrolled-table {
+	overflow-y: hidden;
+	margin-top:4px;
+}
+
+.scrolled-tbody {
+	overflow-y: auto;
+	max-height: 372px;
+}

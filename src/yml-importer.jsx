@@ -15,6 +15,7 @@ var Input = require('react-bootstrap').Input;
 var ProgressBar = require('react-bootstrap').ProgressBar;
 
 var YmlProducts = require('./yml-products');
+var BackendLogger = require('./backend-logger');
 
 module.exports = React.createClass({
 	displayName: 'YmlImporter',
@@ -189,6 +190,8 @@ module.exports = React.createClass({
 	},
 	
 	uploadFile : function(withData) {
+		ReactDOM.render(<div></div>,
+			document.getElementById('yml-processing-container'));
 		this.hideError();
 		if(this.state.file == '') {
 			this.showWarning(window.translate('please_select_file_or_url'));
@@ -300,6 +303,12 @@ module.exports = React.createClass({
 		if(!withData) {
 			yml_data = JSON.stringify(ajax_data)
 		}
+
+		ReactDOM.render(<BackendLogger userId={this.state.userId}
+			processing_progress_id={'yml-processing-progress-container'}
+			processing_container_id={'yml-processing-container-data'}
+			processing_stats_id={'yml-processing-stats'} />,
+			document.getElementById('yml-processing-container'));
 		
    		$.ajax({
 	    	type: 'post',
@@ -473,6 +482,7 @@ module.exports = React.createClass({
 						</Panel>
 						<div id="yml-importer-problem">
 						</div>
+						<div id='yml-processing-container'></div>
 						<div id="yml-importer-content" className="table-responsive">
 					   	</div>
 					</Col>

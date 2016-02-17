@@ -40,7 +40,22 @@ window.translations = {
 		'param_name_in_yml': 'Element <param> name of <offer>',
 		'failed_to_load_file': 'Failed to load file',
 		'categories_relations': 'Categories relations',
-		'importer': 'importer'
+		'importer': 'importer',
+		'status': 'Status',
+		'time': 'Time',
+		'message': 'Message',
+		'data': 'Data',
+		'no_changes': 'Product already in tobox. No changes.',
+		'updating_product': 'Updating existing product',
+		'uploading_product': 'Uploading product',
+		'task_started': 'Uploading products task starter',
+		'product_upload_problem': 'Product upload problem',
+		'product_uploading_success': 'Product uploading success',
+		'product_updating_success': 'Product updating success',
+		'image_upload_problem': 'Image uploading problem',
+		'uploaded': 'Uploaded',
+		'updated': 'Updated',
+		'failed': 'Failed'
 	},
 	'ru': {
 		'not_selected': 'Не выбрано',
@@ -76,7 +91,22 @@ window.translations = {
 		'param_name_in_yml': 'Имя элемента <param> в <offer>',
 		'failed_to_load_file': 'Ошибка загрузки файла',
 		'categories_relations': 'Соответствия категорий',
-		'importer': 'импортер'
+		'importer': 'импортер',
+		'status': 'Статус',
+		'time': 'Время',
+		'message': 'Сообщение',
+		'data': 'Данные',
+		'no_changes': 'Данный продукт уже есть в tobox. Нет изменений.',
+		'updating_product': 'Обновление существующего продукта',
+		'task_started': 'Идет загрузка продуктов',
+		'uploading_product': 'Загрузка продукта',
+		'product_upload_problem': 'Проблема при загрузке продукта',
+		'product_uploading_success': 'Продукт загружен успешно',
+		'product_updating_success': 'Продукт обновлен успешно',
+		'image_upload_problem': 'Проблема при загрузке картинки',
+		'uploaded': 'Загружено',
+		'updated': 'Обновлено',
+		'failed': 'Ошибки'
 	}
 }
 

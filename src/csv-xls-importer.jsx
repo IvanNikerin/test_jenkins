@@ -17,6 +17,8 @@ var ButtonInput = require('react-bootstrap').ButtonInput;
 var ProgressBar = require('react-bootstrap').ProgressBar;
 var DropdownButton = require('react-bootstrap').DropdownButton;
 
+var BackendLogger = require('./backend-logger');
+
 var GridViewer = require('./grid-viewer');
 
 module.exports = React.createClass({
@@ -225,6 +227,8 @@ module.exports = React.createClass({
 	},
 
 	prepareUpdate: function() {
+		ReactDOM.render(<div></div>,
+			document.getElementById('csv-xls-processing-container'));
 		var global_category = this.state.globalCategory;
 		var products_relations = this.state.productsRelations;
 
@@ -272,6 +276,13 @@ module.exports = React.createClass({
 		
 		if(error_count < Object.keys(this.state.data['sheets']).length)
 		{
+			ReactDOM.render(<BackendLogger userId={this.state.userId}
+				processing_progress_id={'csv-xls-processing-progress-container'}
+				processing_container_id={'csv-xls-processing-container-data'}
+				processing_stats_id={'csv-xls-processing-stats'} />,
+				document.getElementById('csv-xls-processing-container'));
+
+
 			this.postUpdate(relation_json);
 		}
 	},
@@ -445,6 +456,7 @@ module.exports = React.createClass({
 					</div>
 					<div id="csv-xls-importer-problem">
 					</div>
+					<div id='csv-xls-processing-container'></div>
 					<div id="csv-xls-xlsx-importer-content">
 						{content}
 			    	</div>
