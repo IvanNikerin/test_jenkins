@@ -34,11 +34,9 @@ module.exports = React.createClass({
 		$.ajax({
 	    	type: 'post',
 	    	url: '/importer/api/tasks/',
-	    	data: {user_id: this.state.user_id},
-	    	success: function(data) {
-	    		window.processing_upload = false;
-	    	}
+	    	data: {user_id: this.state.user_id}
    		});
+   		window.processing_upload = false;
 	},
 
 	processing: function() {
