@@ -229,9 +229,9 @@ module.exports = React.createClass({
 	prepareUpdate: function() {
 		if (window.processing_upload)
 		{
-			return;
+			//return;
 		}
-		
+
 		ReactDOM.render(<div></div>,
 			document.getElementById('csv-xls-processing-container'));
 

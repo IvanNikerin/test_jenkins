@@ -192,9 +192,9 @@ module.exports = React.createClass({
 	uploadFile : function(withData) {
 		if (window.processing_upload)
 		{
-			return;
+			//return;
 		}
-		
+
 		ReactDOM.render(<div></div>,
 			document.getElementById('yml-processing-container'));
 
