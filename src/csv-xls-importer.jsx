@@ -229,6 +229,12 @@ module.exports = React.createClass({
 	prepareUpdate: function() {
 		ReactDOM.render(<div></div>,
 			document.getElementById('csv-xls-processing-container'));
+
+		if (window.processing_upload)
+		{
+			return;
+		}
+
 		var global_category = this.state.globalCategory;
 		var products_relations = this.state.productsRelations;
 

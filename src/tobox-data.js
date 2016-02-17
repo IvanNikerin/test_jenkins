@@ -5,6 +5,8 @@ window.products = {'Картинка': 'pictures', 'Заголовок': 'title'
 window.required = ['pictures','title','description','price']
 window.messages = {'not_selected': 'Not selected'};
 
+window.processing_upload = false;
+
 window.translations = {
 	'en': {
 		'not_selected': 'Not selected',
