@@ -190,15 +190,15 @@ module.exports = React.createClass({
 	},
 	
 	uploadFile : function(withData) {
-		ReactDOM.render(<div></div>,
-			document.getElementById('yml-processing-container'));
-
-		this.hideError();
-
 		if (window.processing_upload)
 		{
 			return;
 		}
+		
+		ReactDOM.render(<div></div>,
+			document.getElementById('yml-processing-container'));
+
+		this.hideError();
 
 		if(this.state.file == '') {
 			this.showWarning(window.translate('please_select_file_or_url'));
