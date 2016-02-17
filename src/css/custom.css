@@ -34,3 +34,10 @@ input.table-checkbox[type="checkbox"]{
 .margin-panel {
 	margin-top: 50px;
 }
+
+.search-tobox-categories {
+	width: 90%;
+	margin-left:10px;
+	margin-bottom:-10px;
+}
+

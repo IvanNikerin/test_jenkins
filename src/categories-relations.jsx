@@ -114,6 +114,25 @@ module.exports = React.createClass({
 	componentDidMount: function() {
 		this.getToboxCategories();
     },
+	
+	preventClosingDropdown: function(e) {
+		alert('preventing dropdown to close');
+
+	},
+	filterCategoties: function(e) {
+		var id = e.target.id.substring(13);
+		ReactDOM.render(
+			<Nav className="table-nav-element" >
+				<NavDropdown id={'tobox-nav-cat-' + id} title={window.messages['not_selected']} data-selected='-1'>
+					<Input id={'search-input-' + id} className="search-tobox-categories" type="text" placeholder="Search..." onFocus={this.preventClosingDropdown} onChange={this.filterCategoties}/>
+					<MenuItem id={-1} key='-1' onClick={this.onCategoryClick} data-row={id}>{window.messages['not_selected']}</MenuItem>
+					{this.generateCategoriesView(this.state.toboxCategories, id, e.target.value)}
+				</NavDropdown>
+			</Nav>,
+			document.getElementById('tobox-cat-' + id)
+		);
+		
+	},
 
     addRow: function() {
     	var id = this.state.rowId;
@@ -128,10 +147,11 @@ module.exports = React.createClass({
 
 		
 		ReactDOM.render(
-			<Nav className="table-nav-element">
+			<Nav className="table-nav-element" >
 				<NavDropdown id={'tobox-nav-cat-' + id} title={window.messages['not_selected']} data-selected='-1'>
+					<Input id={'search-input-' + id} className="search-tobox-categories" type="text" placeholder="Search..." onFocus={this.preventClosingDropdown} onChange={this.filterCategoties}/>
 					<MenuItem id={-1} key='-1' onClick={this.onCategoryClick} data-row={id}>{window.messages['not_selected']}</MenuItem>
-					{this.generateCategoriesView(this.state.toboxCategories, id)}
+					{this.generateCategoriesView(this.state.toboxCategories, id, '')}
 				</NavDropdown>
 			</Nav>,
 			document.getElementById('tobox-cat-' + id)
@@ -232,20 +252,30 @@ module.exports = React.createClass({
 		}
 	},
 
-	generateCategoriesView: function(childs, rowId) {
+	generateCategoriesView: function(childs, rowId, q) {
 		var result = [];
 		childs.map(function(child) {
+			var tmp = null;
+			
 			if(child['child'].length == 0) {
-				result.push(
-					<MenuItem id={child['id']} key={child['id']} onClick={this.onCategoryClick} data-row={rowId}>{child['title']}</MenuItem>
-				);
-				return result;
+				if(q == '' || child['title'].toLowerCase().indexOf(q.toLowerCase())>=0) {
+					result.push(
+						<MenuItem id={child['id']} key={child['id']} onClick={this.onCategoryClick} data-row={rowId}>{child['title']}</MenuItem>
+					);
+					return result;
+				}	
 			}
-			result.push(
-				<NavDropdown id={child['id']} title={child['title']} key={child['id']} data-row={rowId} >
-					{this.generateCategoriesView(child['child'], rowId)}
-	    		</NavDropdown>
-			);
+			
+			tmp = this.generateCategoriesView(child['child'], rowId, q);
+			if(tmp.length > 0) {
+				result.push(
+					<NavDropdown id={child['id']} title={child['title']} key={child['id']} data-row={rowId} >
+						{tmp}
+					</NavDropdown>
+				);
+			}
+
+
 		}.bind(this));
 		return result;
 	},
