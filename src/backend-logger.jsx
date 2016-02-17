@@ -35,8 +35,8 @@ module.exports = React.createClass({
 	    	type: 'post',
 	    	url: '/importer/api/tasks/',
 	    	data: {user_id: this.state.user_id},
-	    	success: {
-	    		window.processing_upload = false
+	    	success: function(data) {
+	    		window.processing_upload = false;
 	    	}
    		});
 	},
