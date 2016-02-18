@@ -119,18 +119,36 @@ module.exports = React.createClass({
 		//alert('preventing dropdown to close');
 
 	},
+
 	filterCategoties: function(e) {
 		var id = e.target.id.substring(13);
 		ReactDOM.render(
-			<Nav className="table-nav-element" >
-				<NavDropdown id={'tobox-nav-cat-' + id} title={window.messages['not_selected']} data-selected='-1'>
-					<Input id={'search-input-' + id} className="search-tobox-categories" type="text" placeholder="Search..." onFocus={this.preventClosingDropdown} onChange={this.filterCategoties}/>
-					<MenuItem id={-1} key='-1' onClick={this.onCategoryClick} data-row={id}>{window.messages['not_selected']}</MenuItem>
-					{this.generateCategoriesView(this.state.toboxCategories, id, e.target.value)}
-				</NavDropdown>
-			</Nav>,
+			<div>
+				<Input id={'search-input-' + id} className="search-tobox-categories" type="text" placeholder="Search..." onFocus={this.preventClosingDropdown} onChange={this.filterCategoties}/>
+				<Nav className="table-nav-element">
+					<NavDropdown id={'tobox-nav-cat-' + id} title={window.messages['not_selected']} data-selected='-1'>
+						<MenuItem id={-1} key='-1' onClick={this.onCategoryClick} data-row={id}>{window.messages['not_selected']}</MenuItem>
+						{this.generateCategoriesView(this.state.toboxCategories, id, e.target.value)}
+					</NavDropdown>
+				</Nav>
+			</div>,
 			document.getElementById('tobox-cat-' + id)
 		);
+		
+		if(e.target.value != '')
+		{
+			if(!$(e.target).parent().parent().children('ul').children('li').hasClass("open"))
+			{
+				$(e.target).parent().parent().children('ul').children('li').children('a').get(0).click();
+			}
+		}
+		else {
+			if($(e.target).parent().parent().children('ul').children('li').hasClass("open"))
+			{
+				$(e.target).parent().parent().children('ul').children('li').children('a').get(0).click();
+			}
+		}
+		
 		
 	},
 
@@ -147,13 +165,15 @@ module.exports = React.createClass({
 
 		
 		ReactDOM.render(
-			<Nav className="table-nav-element" >
-				<NavDropdown id={'tobox-nav-cat-' + id} title={window.messages['not_selected']} data-selected='-1'>
-					<Input id={'search-input-' + id} className="search-tobox-categories" type="text" placeholder="Search..." onFocus={this.preventClosingDropdown} onChange={this.filterCategoties}/>
-					<MenuItem id={-1} key='-1' onClick={this.onCategoryClick} data-row={id}>{window.messages['not_selected']}</MenuItem>
-					{this.generateCategoriesView(this.state.toboxCategories, id, '')}
-				</NavDropdown>
-			</Nav>,
+			<div>
+				<Input id={'search-input-' + id} className="search-tobox-categories" type="text" placeholder="Search..." onFocus={this.preventClosingDropdown} onChange={this.filterCategoties}/>
+				<Nav className="table-nav-element">
+					<NavDropdown onClick={this.test} id={'tobox-nav-cat-' + id} title={window.messages['not_selected']} data-selected='-1'>
+						<MenuItem id={-1} key='-1' onClick={this.onCategoryClick} data-row={id}>{window.messages['not_selected']}</MenuItem>
+						{this.generateCategoriesView(this.state.toboxCategories, id, '')}
+					</NavDropdown>
+				</Nav>
+			</div>,
 			document.getElementById('tobox-cat-' + id)
 		);
 		

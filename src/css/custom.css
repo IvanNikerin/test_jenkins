@@ -12,11 +12,11 @@ input.table-checkbox[type="checkbox"]{
 }
 
 .table-element {
-	margin-top: 15px;
+	margin-top: 23px;
 }
 
 .table-nav-element {
-	margin-top: 17px;
+	margin-top: -12px;
 }
 
 .table-delete-col {
@@ -36,9 +36,8 @@ input.table-checkbox[type="checkbox"]{
 }
 
 .search-tobox-categories {
-	width: 90%;
-	margin-left:10px;
-	margin-bottom:-10px;
+	width: 100%;
+	margin: 5px 0 0 0;
 }
 
 .scrolled-table {
