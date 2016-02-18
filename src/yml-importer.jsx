@@ -50,6 +50,7 @@ module.exports = React.createClass({
 			ymlCats: {},
 			enableUpload: false,
 			errorNeedHide: true,
+			isProcessing: false,
 			// INFO: for tests with our login
 			/*'token': $.cookie('toboxkey'),
 			'tokens': $.cookie('toboxskey')*/
@@ -188,11 +189,18 @@ module.exports = React.createClass({
 		}
 		this.setState({errorNeedHide:false});
 	},
+
+	setProcessingStatus: function(status) {
+		console.log(status);
+		this.setState({
+			'isProcessing': status
+		});
+	},
 	
 	uploadFile : function(withData) {
-		if (window.processing_upload)
+		if (this.state.isProcessing)
 		{
-			//return;
+			return;
 		}
 
 		ReactDOM.render(<div></div>,
@@ -311,10 +319,16 @@ module.exports = React.createClass({
 			yml_data = JSON.stringify(ajax_data)
 		}
 
+		this.setState({
+			'isProcessing': true
+		})
+
 		ReactDOM.render(<BackendLogger userId={this.state.userId}
 			processing_progress_id={'yml-processing-progress-container'}
 			processing_container_id={'yml-processing-container-data'}
-			processing_stats_id={'yml-processing-stats'} />,
+			processing_stats_id={'yml-processing-stats'}
+			file_name={fname}
+			is_processing={this.setProcessingStatus} />,
 			document.getElementById('yml-processing-container'));
 		
    		$.ajax({

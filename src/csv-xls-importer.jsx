@@ -35,6 +35,7 @@ module.exports = React.createClass({
 			'data': {sheets: []},
 			'errorNeedHide': true,
 			'messageNeedHide': true,
+			isProcessing: false,
 			//INFO: for tests with our login
 			//'token': $.cookie('toboxkey'),
 			'fileName': ''
@@ -226,10 +227,17 @@ module.exports = React.createClass({
    		});
 	},
 
+	setProcessingStatus: function(status) {
+		console.log(status);
+		this.setState({
+			'isProcessing': status
+		});
+	},
+
 	prepareUpdate: function() {
-		if (window.processing_upload)
+		if (this.state.isProcessing)
 		{
-			//return;
+			return;
 		}
 
 		ReactDOM.render(<div></div>,
@@ -282,10 +290,16 @@ module.exports = React.createClass({
 		
 		if(error_count < Object.keys(this.state.data['sheets']).length)
 		{
+			this.setState({
+				'isProcessing': true
+			})
+
 			ReactDOM.render(<BackendLogger userId={this.state.userId}
 				processing_progress_id={'csv-xls-processing-progress-container'}
 				processing_container_id={'csv-xls-processing-container-data'}
-				processing_stats_id={'csv-xls-processing-stats'} />,
+				processing_stats_id={'csv-xls-processing-stats'}
+				file_name={this.state.fileName}
+				is_processing={this.setProcessingStatus}/>,
 				document.getElementById('csv-xls-processing-container'));
 
 

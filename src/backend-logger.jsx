@@ -21,7 +21,9 @@ module.exports = React.createClass({
         	'processing_progress_id': this.props.processing_progress_id,
         	'processing_container_id': this.props.processing_container_id,
         	'processing_stats_id': this.props.processing_stats_id,
-        	'stats': {'uploaded': 0, 'updated': 0, 'failed': 0}
+        	'file_name': this.props.file_name,
+        	'stats': {'uploaded': 0, 'updated': 0, 'failed': 0},
+        	'is_processing': this.props.is_processing
         });
     },
 
@@ -34,9 +36,84 @@ module.exports = React.createClass({
 		$.ajax({
 	    	type: 'post',
 	    	url: '/importer/api/tasks/',
-	    	data: {user_id: this.state.user_id}
+	    	data: {user_id: this.state.user_id, file_name: this.state.file_name}
    		});
    		window.processing_upload = false;
+	},
+
+	renderStatus: function(log, data) {
+		var stats = this.state.stats;
+
+	    if(data['has_error']) {
+	    	stats['failed'] += 1;
+	    }
+
+	    var now = data['current_iteration'] / data['iterations'] * 100;
+	    ReactDOM.render(<ProgressBar now={now | 0} label="%(percent)s%" />, document.getElementById(this.state.processing_progress_id));
+		var html = [];
+
+		var uploaded = 0;
+		var updated = 0;
+
+		log.map(function(element) {
+			$.each(element, function(key, value) {
+				if (value[0] == 'product_uploading_success')
+				{
+					uploaded += 1;
+				}
+				else if (value[0] == 'product_updating_success')
+				{
+					updated += 1;
+				}
+
+				var r = /\\u([\d\w]{4})/gi;
+				x = value[1].replace(r, function (match, grp) {
+    			return String.fromCharCode(parseInt(grp, 16)); } );
+				x = unescape(x);
+				html.push(
+					<tr key={key}>
+						<td>
+							{key}
+								</td>
+									<td>
+										{window.translate(value[0])}
+									</td>
+									<td>
+										{x}
+									</td>
+								</tr>
+							);
+						})
+					});
+
+				stats['uploaded'] = uploaded;
+				stats['updated'] = updated;
+
+				this.setState({
+					'stats': stats
+				});
+
+   				ReactDOM.render(
+   					<Table className="scrolled-table" striped bordered condensed hover>
+   						<thead>
+   							<tr>
+    							<th>
+    								{window.translate('time')}
+    							</th>
+    							<th>
+    								{window.translate('message')}
+    							</th>
+    							<th>
+    								{window.translate('data')}
+    							</th>
+   							</tr>
+   						</thead>
+   						<tbody className="scrolled-tbody">
+   							{html}
+   						</tbody>
+   					</Table>,
+   					document.getElementById(this.state.processing_container_id)
+		);
 	},
 
 	processing: function() {
@@ -45,7 +122,7 @@ module.exports = React.createClass({
 	    	type: 'get',
 	    	url: '/importer/api/tasks/',
 	    	dataType: 'json',
-	    	data: {user_id: this.state.user_id},
+	    	data: {user_id: this.state.user_id, file_name: this.state.file_name},
 	    	success: function(data){
 	    		if (Object.keys(data).length === 0) {
 	    		}
@@ -57,81 +134,13 @@ module.exports = React.createClass({
 	    					'is_need_process': false
 	    				});
 	    				ReactDOM.render(<ProgressBar now={100} label="%(percent)s%" />, document.getElementById(this.state.processing_progress_id));
+	    				this.renderStatus(log, data);
 	    				this.clearLog();
+
+	    				this.state.is_processing(false);
 	    			}
 	    			else {
-	    				var stats = this.state.stats;
-
-	    				if(data['has_error']) {
-	    					stats['failed'] += 1;
-	    				}
-
-	    				var now = data['current_iteration'] / data['iterations'] * 100;
-	    				ReactDOM.render(<ProgressBar now={now | 0} label="%(percent)s%" />, document.getElementById(this.state.processing_progress_id));
-						var html = [];
-
-						var uploaded = 0;
-						var updated = 0;
-
-						log.map(function(element) {
-							$.each(element, function(key, value) {
-								if (value[0] == 'product_uploading_success')
-								{
-									uploaded += 1;
-								}
-								else if (value[0] == 'product_updating_success')
-								{
-									updated += 1;
-								}
-
-								var r = /\\u([\d\w]{4})/gi;
-								x = value[1].replace(r, function (match, grp) {
-    							return String.fromCharCode(parseInt(grp, 16)); } );
-								x = unescape(x);
-								html.push(
-									<tr key={key}>
-										<td>
-											{key}
-										</td>
-										<td>
-											{window.translate(value[0])}
-										</td>
-										<td>
-											{x}
-										</td>
-									</tr>
-								);
-							})
-						});
-
-						stats['uploaded'] = uploaded;
-						stats['updated'] = updated;
-
-						this.setState({
-							'stats': stats
-						});
-
-	    				ReactDOM.render(
-		    					<Table className="scrolled-table" striped bordered condensed hover>
-		    						<thead>
-		    							<tr>
-			    							<th>
-			    								{window.translate('time')}
-			    							</th>
-			    							<th>
-			    								{window.translate('message')}
-			    							</th>
-			    							<th>
-			    								{window.translate('data')}
-			    							</th>
-		    							</tr>
-		    						</thead>
-		    						<tbody className="scrolled-tbody">
-		    							{html}
-		    						</tbody>
-		    					</Table>,
-	    					document.getElementById(this.state.processing_container_id)
-	    				);
+	    				this.renderStatus(log, data);
 	    			}
 	    		}
 	    	}.bind(this)

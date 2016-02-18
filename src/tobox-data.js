@@ -57,7 +57,8 @@ window.translations = {
 		'image_upload_problem': 'Image uploading problem',
 		'uploaded': 'Uploaded',
 		'updated': 'Updated',
-		'failed': 'Failed'
+		'failed': 'Failed',
+		'finish': 'Uploading products task finished'
 	},
 	'ru': {
 		'not_selected': 'Не выбрано',
@@ -108,7 +109,8 @@ window.translations = {
 		'image_upload_problem': 'Проблема при загрузке картинки',
 		'uploaded': 'Загружено',
 		'updated': 'Обновлено',
-		'failed': 'Ошибки'
+		'failed': 'Ошибки',
+		'finish': 'Загрузка продуктов закончена'
 	}
 }
 

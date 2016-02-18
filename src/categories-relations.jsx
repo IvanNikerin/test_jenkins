@@ -61,6 +61,14 @@ module.exports = React.createClass({
 		);
 	},
 
+	clearLog: function() {
+		$.ajax({
+	    	type: 'post',
+	    	url: '/importer/api/tasks/',
+	    	data: {user_id: this.state.userId}
+   		});
+	},
+
 	getCategories: function(toboxCategories) {
 		$.ajax({
             type: "get",
@@ -86,6 +94,8 @@ module.exports = React.createClass({
 				window.categories = relations;
 
                 this.renderRows();
+
+                this.clearLog();
             }.bind(this),
             error: function (xhr, ajaxOptions, thrownError) {
             	this.showError(xhr.status + ', ' + thrownError);
