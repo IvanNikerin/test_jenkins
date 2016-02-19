@@ -13,6 +13,7 @@ var Well = require('react-bootstrap').Well;
 var Label = require('react-bootstrap').Label;
 var Input = require('react-bootstrap').Input;
 var ButtonInput = require('react-bootstrap').ButtonInput;
+var Button = require('react-bootstrap').Button;
 
 var CsvXlsImporter = require('./csv-xls-importer');
 var YmlImporter = require('./yml-importer');
@@ -38,6 +39,14 @@ module.exports = React.createClass({displayName: 'Content',
             data: { user_id: userId, token: $.cookie('toboxkey') }
         });
     },
+	
+	clickTobox: function() {
+		document.getElementById('toboxId').click();
+	},
+	
+	clickSeller: function() {
+		document.getElementById('sellerId').click();
+	},
 
     getProfile: function() {
         $.ajax({
@@ -58,6 +67,16 @@ module.exports = React.createClass({displayName: 'Content',
                 });
                 ReactDOM.render(
                     <div>
+						<Row>
+							<Col xs={12}>
+								<a id="toboxId" href="http://tobox.com" className="displaynone"></a>
+								<a id="sellerId" href="http://tobox.com/seller/" className="displaynone"></a>
+								<Button onClick={this.clickTobox} className="pull-right tobox-button" bsStyle="info">ToBox</Button>
+								<Button onClick={this.clickSeller} className="pull-right seller-button" bsStyle="default">Seller</Button>
+							</Col>
+
+						</Row>
+
                         <Tabs defaultActiveKey={1}>
                             <Tab eventKey={1} title={window.translate("categories_relations")}>
                                 <CategoriesRelations userId={this.state.userId} shopId={this.state.shopId}/>

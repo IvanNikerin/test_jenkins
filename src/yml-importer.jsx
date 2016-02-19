@@ -323,13 +323,16 @@ module.exports = React.createClass({
 			'isProcessing': true
 		})
 
-		ReactDOM.render(<BackendLogger userId={this.state.userId}
-			processing_progress_id={'yml-processing-progress-container'}
-			processing_container_id={'yml-processing-container-data'}
-			processing_stats_id={'yml-processing-stats'}
-			file_name={fname}
-			is_processing={this.setProcessingStatus} />,
-			document.getElementById('yml-processing-container'));
+		
+		if(!withData) {
+			ReactDOM.render(<BackendLogger userId={this.state.userId}
+				processing_progress_id={'yml-processing-progress-container'}
+				processing_container_id={'yml-processing-container-data'}
+				processing_stats_id={'yml-processing-stats'}
+				file_name={fname}
+				is_processing={this.setProcessingStatus} />,
+				document.getElementById('yml-processing-container'));
+		}
 		
    		$.ajax({
 	    	type: 'post',

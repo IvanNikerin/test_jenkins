@@ -49,3 +49,19 @@ input.table-checkbox[type="checkbox"]{
 	overflow-y: auto;
 	max-height: 372px;
 }
+
+.seller-button {
+	width: 100px;
+	margin: 5px;
+}
+
+.tobox-button{
+	width: 100px;
+	margin: 5px;
+
+}
+
+.displaynone {
+	
+	display:none;
+}
