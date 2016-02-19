@@ -319,12 +319,13 @@ module.exports = React.createClass({
 			yml_data = JSON.stringify(ajax_data)
 		}
 
-		this.setState({
-			'isProcessing': true
-		})
 
 		
 		if(!withData) {
+			this.setState({
+				'isProcessing': true
+			})
+		
 			ReactDOM.render(<BackendLogger userId={this.state.userId}
 				processing_progress_id={'yml-processing-progress-container'}
 				processing_container_id={'yml-processing-container-data'}
@@ -397,6 +398,10 @@ module.exports = React.createClass({
 	},
 	
 	parse: function() {
+		if (this.state.isProcessing)
+		{
+			return;
+		}
 		this.hideError();
 		var file = this.state.file;
 		var yml_url = document.getElementById('shop-autoupdate-url').value;
@@ -420,6 +425,9 @@ module.exports = React.createClass({
 				}
 			}
 		} else {
+			ReactDOM.render(<div></div>,
+				document.getElementById('yml-processing-container'));
+		
 			this.uploadYmlFile(file);
 		}
 	},
