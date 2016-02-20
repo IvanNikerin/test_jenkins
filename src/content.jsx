@@ -70,7 +70,7 @@ module.exports = React.createClass({displayName: 'Content',
 						<Row>
 							<Col xs={12}>
 								<a id="toboxId" href="http://tobox.com" className="displaynone"></a>
-								<a id="sellerId" href="http://tobox.com/seller/" className="displaynone"></a>
+								<a id="sellerId" href="/seller" className="displaynone"></a>
 								<Button onClick={this.clickTobox} className="pull-right tobox-button" bsStyle="info">ToBox</Button>
 								<Button onClick={this.clickSeller} className="pull-right seller-button" bsStyle="default">Seller</Button>
 							</Col>

@@ -58,7 +58,8 @@ window.translations = {
 		'uploaded': 'Uploaded',
 		'updated': 'Updated',
 		'failed': 'Failed',
-		'finish': 'Uploading products task finished'
+		'finish': 'Uploading products task finished',
+		'internal_error': 'Internal error'
 	},
 	'ru': {
 		'not_selected': 'Не выбрано',
@@ -110,7 +111,8 @@ window.translations = {
 		'uploaded': 'Загружено',
 		'updated': 'Обновлено',
 		'failed': 'Ошибки',
-		'finish': 'Загрузка продуктов закончена'
+		'finish': 'Загрузка продуктов закончена',
+		'internal_error': 'Внутренняя ошибка'
 	}
 }
 
