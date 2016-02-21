@@ -235,7 +235,16 @@ module.exports = React.createClass({
 		for(var key in window.categories) {
 			for(var catname in this.state.ymlCats) {
 				if(key == catname) {
-					data_cats[this.state.ymlCats[catname]['id']] = window.categories[key];
+					var ymlCatId = window.categories[key][0];
+					if(ymlCatId != "")
+					{
+						if ($.inArray(ymlCatId, this.state.ymlCats[catname]['id'])) {
+							data_cats[ymlCatId] = window.categories[key][1];
+						}
+					}
+					else {
+						data_cats[this.state.ymlCats[catname]['id']] = window.categories[key][1];
+					}
 					continue;
 				}
 			}
@@ -305,6 +314,7 @@ module.exports = React.createClass({
 		}
 		
 		relation_data['categories'] = data_cats;
+
 		relation_data['products'] = data_prods;
 		relation_data['attrs'] = data_attrs;
 		relation_data['params'] = data_params;

@@ -59,7 +59,8 @@ window.translations = {
 		'updated': 'Updated',
 		'failed': 'Failed',
 		'finish': 'Uploading products task finished',
-		'internal_error': 'Internal error'
+		'internal_error': 'Internal error',
+		'yml_category_id': 'YML category ID'
 	},
 	'ru': {
 		'not_selected': 'Не выбрано',
@@ -112,7 +113,8 @@ window.translations = {
 		'updated': 'Обновлено',
 		'failed': 'Ошибки',
 		'finish': 'Загрузка продуктов закончена',
-		'internal_error': 'Внутренняя ошибка'
+		'internal_error': 'Внутренняя ошибка',
+		'yml_category_id': 'ID категории из YML'
 	}
 }
 

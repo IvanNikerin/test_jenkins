@@ -164,15 +164,19 @@ module.exports = React.createClass({
 
     addRow: function() {
     	var id = this.state.rowId;
-        var row = $('<tr id="row-cat-' + id + '"><td class="col-xs-4" id="yml-cat-' + id + '"></td><td class="table-nav-col" id="tobox-cat-' + id + '"></td><td class="text-center table-delete-col" id="delete-button-' + id + '"></td></tr>');
+        var row = $('<tr id="row-cat-' + id + '"><td class="col-xs-2" id="cat-' + id + '"></td><td class="col-xs-2" id="yml-cat-' + id + '"></td><td class="table-nav-col" id="tobox-cat-' + id + '"></td><td class="text-center table-delete-col" id="delete-button-' + id + '"></td></tr>');
         $("#table-cat").append(row);
 		
 		
 		ReactDOM.render(
 			<Input className="table-element" type="text"/>,
-			document.getElementById('yml-cat-' + id)
+			document.getElementById('cat-' + id)
 		);
 
+		ReactDOM.render(
+			<Input className="table-element" type="number"/>,
+			document.getElementById('yml-cat-' + id)
+		);
 		
 		ReactDOM.render(
 			<div>
@@ -207,12 +211,13 @@ module.exports = React.createClass({
 		if(input.length > 0)
 		{
 			input[0].value = data[0];
+			input[1].value = data[1]
 		}
 		
-		ul[0].setAttribute("data-selected", data[1][0]);
+		ul[0].setAttribute("data-selected", data[2][0]);
 		var spans = ul[0].getElementsByTagName('span');
 		if(spans.length > 0) {
-			spans[0].innerHTML = data[1][1];
+			spans[0].innerHTML = data[2][1];
 		}
 	},
 	
@@ -257,8 +262,8 @@ module.exports = React.createClass({
 			$.each(rows, function(key, value) {
 				setTimeout(function() {
 					this.addRow();
-					var tobox_data = this.getPrevToboxData(this.state.toboxCategories, value);
-					this.rowSelect(this.state.rowId, [key, tobox_data]);
+					var tobox_data = this.getPrevToboxData(this.state.toboxCategories, value[1]);
+					this.rowSelect(this.state.rowId, [key, value[0], tobox_data]);
 				}.bind(this), 85);
 			}.bind(this));
 		} else {
@@ -318,13 +323,14 @@ module.exports = React.createClass({
 			var input = this.querySelectorAll('.table-element');
 			if(input.length > 0) {
 				var user_cat = input[0].value;
+				var yml_id = input[1].value;
 			}
 
 			var ul = this.querySelectorAll('ul.nav');
 			if(ul.length > 0) {
 				var tobox_cat = ul[0].getAttribute("data-selected");
 				if (user_cat != '' && tobox_cat && tobox_cat != -1) {
-					relations[user_cat] = tobox_cat;
+					relations[user_cat] = [yml_id, tobox_cat];
 				}
 			}
 		});
@@ -360,7 +366,8 @@ module.exports = React.createClass({
 	    				<Table striped bordered condensed hover>
 							<thead>
 								<tr>
-									<th className="col-xs-4">{window.translate('user_categories')}</th>
+									<th className="col-xs-2">{window.translate('user_categories')}</th>
+									<th className="col-xs-2">{window.translate('yml_category_id')}</th>
 									<th className="table-nav-col">{window.translate('tobox_categories')}</th>
 									<th className="table-delete-col"></th>
 								</tr>
