@@ -9,6 +9,8 @@ var Col = require('react-bootstrap').Col;
 var Table = require('react-bootstrap').Table;
 var ProgressBar = require('react-bootstrap').ProgressBar;
 
+var BootstrapTable = window.BootstrapTable;
+
 var BackendLogger = require('./backend-logger');
 
 module.exports = React.createClass({
@@ -48,12 +50,17 @@ module.exports = React.createClass({
 	    	stats['failed'] += 1;
 	    }
 
-	    var now = data['current_iteration'] / data['iterations'] * 100;
-	    ReactDOM.render(<ProgressBar now={now | 0} label="%(percent)s%" />, document.getElementById(this.state.processing_progress_id));
+		if(data['iterations'] != 0) {
+			var now = data['current_iteration'] / data['iterations'] * 100;
+			ReactDOM.render(<ProgressBar now={now | 0} label="%(percent)s%" />, document.getElementById(this.state.processing_progress_id));
+		} else {
+			ReactDOM.render(<ProgressBar now={100} label="%(percent)s%" />, document.getElementById(this.state.processing_progress_id));
+		}
 		var html = [];
 
 		var uploaded = 0;
 		var updated = 0;
+		var newData = [];
 
 		log.map(function(element) {
 			$.each(element, function(key, value) {
@@ -70,50 +77,39 @@ module.exports = React.createClass({
 				x = value[1].replace(r, function (match, grp) {
     			return String.fromCharCode(parseInt(grp, 16)); } );
 				x = unescape(x);
-				html.push(
-					<tr key={key}>
-						<td>
-							{key}
-								</td>
-									<td>
-										{window.translate(value[0])}
-									</td>
-									<td>
-										{x}
-									</td>
-								</tr>
-							);
-						})
-					});
+				
+				newData.push({id: key, name: window.translate(value[0]), price: x});
+			})
+		});
 
-				stats['uploaded'] = uploaded;
-				stats['updated'] = updated;
+		stats['uploaded'] = uploaded;
+		stats['updated'] = updated;
 
-				this.setState({
-					'stats': stats
-				});
+		this.setState({
+			'stats': stats
+		});
+				
 
-   				ReactDOM.render(
-   					<Table className="scrolled-table" striped bordered condensed hover>
-   						<thead>
-   							<tr>
-    							<th>
-    								{window.translate('time')}
-    							</th>
-    							<th>
-    								{window.translate('message')}
-    							</th>
-    							<th>
-    								{window.translate('data')}
-    							</th>
-   							</tr>
-   						</thead>
-   						<tbody className="scrolled-tbody">
-   							{html}
-   						</tbody>
-   					</Table>,
-   					document.getElementById(this.state.processing_container_id)
+		ReactDOM.render(
+			<BootstrapTable data={ newData } maxHeight="227">
+				<TableHeaderColumn dataField="id" isKey={true}>{window.translate('time')}</TableHeaderColumn>
+				<TableHeaderColumn dataField="name">{window.translate('message')}</TableHeaderColumn>
+				<TableHeaderColumn dataField="price">{window.translate('data')}</TableHeaderColumn>
+			</BootstrapTable>,
+			document.getElementById(this.state.processing_container_id)
 		);
+		
+		this.scrollToBottom();
+	},
+	
+	scrollToBottom: function() {
+		var trs = $("#" + this.state.processing_container_id).find('tr');
+		if(trs.length > 0) {
+			var rowpos = $(trs[trs.length - 1]).position();
+			
+			var tbody = $(".table-container")[0];
+			$(tbody).scrollTop(rowpos.top);
+		}
 	},
 
 	processing: function() {

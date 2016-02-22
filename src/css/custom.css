@@ -40,15 +40,6 @@ input.table-checkbox[type="checkbox"]{
 	margin: 5px 0 0 0;
 }
 
-.scrolled-table {
-	overflow-y: hidden;
-	margin-top:4px;
-}
-
-.scrolled-tbody {
-	overflow-y: auto;
-	max-height: 372px;
-}
 
 .seller-button {
 	width: 100px;
@@ -65,3 +56,8 @@ input.table-checkbox[type="checkbox"]{
 	
 	display:none;
 }
+
+
+
+
+
