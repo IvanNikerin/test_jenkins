@@ -46,9 +46,9 @@ module.exports = React.createClass({
 	renderStatus: function(log, data) {
 		var stats = this.state.stats;
 
-	    if(data['has_error']) {
+	    /*if(data['has_error']) {
 	    	stats['failed'] += 1;
-	    }
+	    }*/
 
 		if(data['iterations'] != 0) {
 			var now = data['current_iteration'] / data['iterations'] * 100;
@@ -60,6 +60,7 @@ module.exports = React.createClass({
 
 		var uploaded = 0;
 		var updated = 0;
+		var errors = 0;
 		var newData = [];
 
 		log.map(function(element) {
@@ -71,6 +72,10 @@ module.exports = React.createClass({
 				else if (value[0] == 'product_updating_success')
 				{
 					updated += 1;
+				}
+				else if (value[0] == 'product_upload_problem')
+				{
+					errors += 1;
 				}
 
 				var r = /\\u([\d\w]{4})/gi;
@@ -84,6 +89,7 @@ module.exports = React.createClass({
 
 		stats['uploaded'] = uploaded;
 		stats['updated'] = updated;
+		stats['failed'] = errors;
 
 		this.setState({
 			'stats': stats
@@ -125,7 +131,7 @@ module.exports = React.createClass({
 	    		else {
 	    			var log = JSON.parse(data['log'])
 	    			var code = log[log.length - 1][Object.keys(log[log.length - 1])[0]][0];
-	    			if (code == 'finish'){
+	    			if (code == 'finish' || code == 'finish_with_error'){
 	    				this.setState({
 	    					'is_need_process': false
 	    				});

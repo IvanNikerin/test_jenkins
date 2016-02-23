@@ -60,7 +60,10 @@ window.translations = {
 		'failed': 'Failed',
 		'finish': 'Uploading products task finished',
 		'internal_error': 'Internal error',
-		'yml_category_id': 'YML category ID'
+		'yml_category_id': 'YML category ID',
+		'finish_with_error': 'Uploading products task finished with error',
+		'bad_image_url': 'Bad image URL',
+		'bad_price_format': 'Bad price format'
 	},
 	'ru': {
 		'not_selected': 'Не выбрано',
@@ -114,7 +117,10 @@ window.translations = {
 		'failed': 'Ошибки',
 		'finish': 'Загрузка продуктов закончена',
 		'internal_error': 'Внутренняя ошибка',
-		'yml_category_id': 'ID категории из YML'
+		'yml_category_id': 'ID категории из YML',
+		'finish_with_error': 'Загрузка продуктов закончена с ошибкой',
+		'bad_image_url': 'Неверный формат URL картинки',
+		'bad_price_format': 'Неверный формат цены'
 	}
 }
 
