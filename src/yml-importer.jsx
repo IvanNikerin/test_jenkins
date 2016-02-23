@@ -36,6 +36,14 @@ module.exports = React.createClass({
                         shopId: data["shopIds"][0],
                         userId: data["userId"]
                     });
+					
+					
+					var prevData = localStorage.getItem('ymlImporterPrevData');
+					if(prevData != null) {
+						prevData = JSON.parse(prevData);
+						this.getRelations(prevData['data'], prevData['filename']);
+						this.setState({fileName: prevData['filename']});
+					}
                 }
             }.bind(this)
         });        
@@ -46,6 +54,7 @@ module.exports = React.createClass({
 			'userId': '',
 			'shopId': '',
 		    file: "",
+			fileName: "",
 			data: [],
 			ymlCats: {},
 			enableUpload: false,
@@ -386,6 +395,7 @@ module.exports = React.createClass({
     			"content-type": "text/plain"
   			},
 	    	success: function(data){
+				localStorage.setItem('ymlImporterPrevData', JSON.stringify({data: data, filename: file.name}));
 				this.getRelations(data, file.name)
 	    	}.bind(this)
    		});
@@ -402,6 +412,7 @@ module.exports = React.createClass({
 	    		filename: gen_file_name
 	    	},
 	    	success: function(data){
+				localStorage.setItem('ymlImporterPrevData', JSON.stringify({data: data, filename: gen_file_name}));
 				this.getRelations(data, gen_file_name)
 	    	}.bind(this)
    		});
@@ -473,6 +484,7 @@ module.exports = React.createClass({
 		//var extension = input.files[0].name.split('.').pop();
     	//if(extension == "yml" || extension == "xml") {
 		this.setState({file: input.files[0]});
+		this.setState({fileName: input.files[0].name});
     	//} else {
 		//	this.viewError("Bad file type");
     	//}
@@ -491,6 +503,7 @@ module.exports = React.createClass({
 								   				<Input 
 								   					type="file"
 								   					ref="filename"
+													help={this.state.fileName}
 								   					onChange={this.handleFile} />
 								   			</Col>		
 							   				<Col xs={6}>

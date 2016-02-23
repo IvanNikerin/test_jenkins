@@ -14,6 +14,7 @@ module.exports = React.createClass({
 			<Input className="table-element" type="select" placeholder={window.translate('not_selected')}>
 				 <option value="-1">{window.translate('not_selected')}</option>
 				 <option value={window.tobox_uuid['value']}>{window.tobox_uuid['name']}</option>
+				 <option value={window.vendor_code['value']}>{window.vendor_code['name']}</option>
 				{rows}
 			</Input>
 		);

@@ -1,5 +1,6 @@
 window.categories = {};
 window.tobox_uuid = {'name': 'Tobox UUID (for update)', 'value': 'id'};
+window.vendor_code = {'name': 'Vendor Code', 'value': 'venorCode'};
 window.tobox_pictures = 'pictures';
 window.products = {'Картинка': 'pictures', 'Заголовок': 'title', 'Описание': 'description', 'Видимость': 'hidden', 'Цена': 'price'};
 window.required = ['pictures','title','description','price']
