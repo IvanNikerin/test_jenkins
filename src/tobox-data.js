@@ -1,7 +1,6 @@
 window.categories = {};
-window.tobox_uuid = {'name': window.translations['tobox_uuid'], 'value': 'id'};
+window.tobox_uuid = {'name': window.translate('tobox_uuid'), 'value': 'id'};
 window.tobox_pictures = 'pictures';
-window.products = {window.translations['picture']: 'pictures', window.translations['title']: 'title', window.translations['description']: 'description', window.translations['visibility']: 'hidden', window.translations['price']: 'price', window.translations['vendor_code']: 'vendorCode'};
 window.required = ['pictures','title','description','price']
 window.messages = {'not_selected': 'Not selected'};
 
@@ -156,3 +155,12 @@ window.translate = function(tag) {
 
 	return window.translations[lang][tag];
 }
+
+window.products = {
+	'Picture': 'pictures',
+	'Title': 'title',
+	'Description': 'description',
+	'Visibility': 'hidden', 
+	'Price': 'price', 
+	'Vendor code': 'vendorCode'
+};
