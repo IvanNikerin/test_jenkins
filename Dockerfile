@@ -1,4 +1,4 @@
-FROM node:5.4.1
+FROM node
 RUN mkdir /app
 WORKDIR /app
 ADD package.json /app/
