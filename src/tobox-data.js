@@ -157,11 +157,11 @@ window.translate = function(tag) {
 
 window.tobox_uuid = {'name': window.translate('tobox_uuid'), 'value': 'id'};
 
-window.products = {
-	'Picture': 'pictures',
-	'Title': 'title',
-	'Description': 'description',
-	'Visibility': 'hidden', 
-	'Price': 'price', 
-	'Vendor code': 'vendorCode'
-};
+window.products = {}
+
+window.products[window.translate('picture')] = 'pictures';
+window.products[window.translate('title')] = 'title';
+window.products[window.translate('description')] = 'description';
+window.products[window.translate('visibility')] = 'hidden';
+window.products[window.translate('price')] = 'price';
+window.products[window.translate('vendor_code')] = 'vendorCode';
