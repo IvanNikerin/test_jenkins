@@ -1,5 +1,4 @@
 window.categories = {};
-window.tobox_uuid = {'name': window.translate('tobox_uuid'), 'value': 'id'};
 window.tobox_pictures = 'pictures';
 window.required = ['pictures','title','description','price']
 window.messages = {'not_selected': 'Not selected'};
@@ -155,6 +154,8 @@ window.translate = function(tag) {
 
 	return window.translations[lang][tag];
 }
+
+window.tobox_uuid = {'name': window.translate('tobox_uuid'), 'value': 'id'};
 
 window.products = {
 	'Picture': 'pictures',
