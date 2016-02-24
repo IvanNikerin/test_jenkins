@@ -200,7 +200,6 @@ module.exports = React.createClass({
 	},
 
 	setProcessingStatus: function(status) {
-		console.log(status);
 		this.setState({
 			'isProcessing': status
 		});
@@ -244,16 +243,18 @@ module.exports = React.createClass({
 		for(var key in window.categories) {
 			for(var catname in this.state.ymlCats) {
 				if(key == catname) {
-					var ymlCatId = window.categories[key][0];
-					if(ymlCatId != "")
-					{
-						if ($.inArray(ymlCatId, this.state.ymlCats[catname]['id'])) {
-							data_cats[ymlCatId] = window.categories[key][1];
+					window.categories[key].map(function(element) {
+						var ymlCatId = element[0];
+						if(ymlCatId != "")
+						{
+							if ($.inArray(ymlCatId, this.state.ymlCats[catname]['id'])) {
+								data_cats[ymlCatId] = element[1];
+							}
 						}
-					}
-					else {
-						data_cats[this.state.ymlCats[catname]['id']] = window.categories[key][1];
-					}
+						else {
+							data_cats[this.state.ymlCats[catname]['id']] = element[1];
+						}
+					}.bind(this));
 					continue;
 				}
 			}

@@ -260,11 +260,13 @@ module.exports = React.createClass({
 		var rows = this.state.categoriesRelations;
 		if (Object.keys(rows).length > 0) {
 			$.each(rows, function(key, value) {
-				setTimeout(function() {
-					this.addRow();
-					var tobox_data = this.getPrevToboxData(this.state.toboxCategories, value[1]);
-					this.rowSelect(this.state.rowId, [key, value[0], tobox_data]);
-				}.bind(this), 85);
+				value.map(function(element) {
+					setTimeout(function() {
+						this.addRow();
+						var tobox_data = this.getPrevToboxData(this.state.toboxCategories, element[1]);
+						this.rowSelect(this.state.rowId, [key, element[0], tobox_data]);
+					}.bind(this), 85);
+				}.bind(this));
 			}.bind(this));
 		} else {
 			this.addRow();
@@ -330,7 +332,14 @@ module.exports = React.createClass({
 			if(ul.length > 0) {
 				var tobox_cat = ul[0].getAttribute("data-selected");
 				if (user_cat != '' && tobox_cat && tobox_cat != -1) {
-					relations[user_cat] = [yml_id, tobox_cat];
+					if(user_cat in relations)
+					{
+						relations[user_cat].push([yml_id, tobox_cat]);
+					}
+					else
+					{
+						relations[user_cat] = [[yml_id, tobox_cat]];
+					}
 				}
 			}
 		});
