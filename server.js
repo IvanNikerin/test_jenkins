@@ -9,16 +9,14 @@ var devServer = new WebpackDevServer(
 		contentBase: __dirname,
 		publicPath: '/assets/',
 		proxy: {
-        	/*'/tobox/*': 'http://127.0.0.1:9090',*/
-          /*'/importer/*':'http://127.0.0.1:9090',*/
-          '/tobox/*':'http://176.112.201.219:9090',
-          '/importer/*': 'http://176.112.201.219:9090',
+        	'/tobox/*': 'http://0.0.0.0:9090',
+          '/importer/*':'http://0.0.0.0:9090',
     	},
     	stats: { 
     		colors: true
     	}
 	}
-).listen(8080, /*localhost*/ '176.112.201.219');
+).listen(8080, '0.0.0.0' /*'176.112.201.219'*/);
 
 var express = require('express');
 var url = require('url');
@@ -35,7 +33,6 @@ app.use('/tobox', proxy(Object.assign(
 app.use('/importer', proxy(Object.assign(
     {},
     url.parse('http://176.112.201.219:8000/'),
-    //url.parse('http://127.0.0.1:8000/'),
     {preserveHost: true}
 )));
 
