@@ -217,7 +217,7 @@ module.exports = React.createClass({
 
 		this.hideError();
 
-		if(this.state.file == '') {
+		if(this.state.file == '' && this.state.fileName == '') {
 			this.showWarning(window.translate('please_select_file_or_url'));
 			return;
 		}
@@ -329,7 +329,7 @@ module.exports = React.createClass({
 		relation_data['params'] = data_params;
 		
 		var ajax_data = this.state.data;
-		var fname = this.state.file.name;
+		var fname = this.state.fileName;
 		var shop = this.state.shopId;
 		var usr = this.state.userId;
 		
@@ -426,6 +426,7 @@ module.exports = React.createClass({
 		this.hideError();
 		var file = this.state.file;
 		var yml_url = document.getElementById('shop-autoupdate-url').value;
+
 		if(file == '') {
 			if(yml_url == '') {
 				this.viewError(window.translate('please_select_file_or_url'), window.translate('error'));
