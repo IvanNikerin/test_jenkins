@@ -1,7 +1,7 @@
 window.categories = {};
-window.tobox_uuid = {'name': 'Tobox UUID (for update)', 'value': 'id'};
+window.tobox_uuid = {'name': window.translations['tobox_uuid'], 'value': 'id'};
 window.tobox_pictures = 'pictures';
-window.products = {'Картинка': 'pictures', 'Заголовок': 'title', 'Описание': 'description', 'Видимость': 'hidden', 'Цена': 'price', 'Vendor Code': 'vendorCode'};
+window.products = {window.translations['picture']: 'pictures', window.translations['title']: 'title', window.translations['description']: 'description', window.translations['visibility']: 'hidden', window.translations['price']: 'price', window.translations['vendor_code']: 'vendorCode'};
 window.required = ['pictures','title','description','price']
 window.messages = {'not_selected': 'Not selected'};
 
@@ -9,6 +9,13 @@ window.processing_upload = false;
 
 window.translations = {
 	'en': {
+		'tobox_uuid': 'Tobox UUID (for update)',
+		'picture': 'Picture',
+		'title': 'Title',
+		'description': 'Description',
+		'visibility': 'Visibility',
+		'price': 'Price',
+		'vendor_code': 'Vendor code',
 		'not_selected': 'Not selected',
 		'assign_categories': 'Assign categories to tobox',
 		'assign_product_params': 'Assign <param> elements of <offer>',
@@ -66,6 +73,13 @@ window.translations = {
 		'bad_price_format': 'Bad price format'
 	},
 	'ru': {
+		'tobox_uuid': 'Tobox UUID (для обновления)',
+		'picture': 'Картинка',
+		'title': 'Заголовок',
+		'description': 'Описание',
+		'visibility': 'Видимость',
+		'price': 'Цена',
+		'vendor_code': 'Артикул производителя',
 		'not_selected': 'Не выбрано',
 		'assign_categories': 'Установить соответствия категорий с tobox',
 		'assign_product_params': 'Установить соответствия элементов <param> в <offer>',
