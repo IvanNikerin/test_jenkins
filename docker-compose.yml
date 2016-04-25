@@ -1,7 +1,0 @@
-web:
-  build: .
-  command: node server.js
-  volumes:
-    - .:/app
-  ports:
-    - "8080:8080"
